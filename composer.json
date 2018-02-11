@@ -1,0 +1,20 @@
+{
+	"name": "holonet/hgit",
+	"description": "Project management application wrapping around git",
+	"type": "project",
+	"authors": [
+		{
+			"name": "matthias.lantsch",
+			"email": "matthias.lantsch@bluewin.ch"
+		}
+	],
+	"autoload": {
+		"psr-4" : {
+			"holonet\\common\\" : "src/",
+			"holonet\\common\\tests\\" : "tests/"
+		}
+	},
+	"require": {
+		"scrivo/highlight.php"
+	}
+}

@@ -4,15 +4,6 @@ CREATE TABLE "projectType" (
   "name" varchar(40) NOT NULL
 )
 
-CREATE TABLE "user" (
-  -- user_1512584325
-  "idUser" integer NOT NULL PRIMARY KEY,
-  "name" varchar(40) NOT NULL,
-  "email" varchar(60),
-  "authhash" varchar(255),
-  "authdigest" varchar(255)
-)
-
 CREATE TABLE "project" (
   -- project_1512584326
   "idProject" integer NOT NULL PRIMARY KEY,
@@ -125,4 +116,12 @@ CREATE TABLE "groupAccess" (
   "idGroup" integer NOT NULL,
   FOREIGN KEY ("idProject") REFERENCES "project"("idProject"),
   FOREIGN KEY ("idGroup") REFERENCES "group"("idGroup")
+)
+
+CREATE TABLE "user" (
+  -- user_1535368976
+  "idUser" integer NOT NULL PRIMARY KEY,
+  "name" varchar(40) NOT NULL,
+  "nick" varchar(20) NOT NULL,
+  "email" varchar(60)
 )

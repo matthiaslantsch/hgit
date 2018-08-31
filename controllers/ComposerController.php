@@ -34,7 +34,7 @@ class ComposerController extends HgitControllerBase {
 	 * @return the yield from the controller method
 	 */
 	public function info() {
-		$this->authenticateUser();
+		$this->authoriseUser();
 
 		$packages = array();
 		foreach (ComposerPackage::all() as $phplib) {
@@ -75,7 +75,7 @@ class ComposerController extends HgitControllerBase {
 	 * @return the yield from the controller method
 	 */
 	public function search() {
-		$this->authenticateUser();
+		$this->authoriseUser();
 
 		//@TODO implement the composer type parameter
 		$query = strip_tags($this->request->query->get("query"));

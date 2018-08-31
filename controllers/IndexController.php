@@ -41,7 +41,7 @@ class IndexController extends HgitControllerBase {
 	 * @return the yield from the controller method
 	 */
 	public function login() {
-		$this->authenticateUser();
+		$this->authoriseUser();
 		$this->redirectInternal();
 	}
 

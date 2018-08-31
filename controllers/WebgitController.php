@@ -129,8 +129,8 @@ class WebgitController extends HgitControllerBase {
 		}
 
 		$this->response = new GitResponse($this->project, $path);
-		if(isset($this->session) && isset($this->session->user)) {
-			$this->response->setUser($this->session->user);
+		if(isset($this->session) && $this->session->has("gituser")) {
+			$this->response->setUser($this->session->hgituser);
 		}
 	}
 

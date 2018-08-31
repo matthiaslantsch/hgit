@@ -16,6 +16,7 @@ use RuntimeException;
 use holonet\hgit\models\ProjectModel;
 use holonet\hgit\models\UserModel;
 use holonet\hgit\models\ProjectTypeModel;
+use holonet\hgit\helpers\AccessMask;
 
 /**
  * ProjectsController exposing a crud interface for the project resource
@@ -44,7 +45,7 @@ class ProjectsController extends HgitControllerBase {
 	 * @return the yield from the controller method
 	 */
 	public function new() {
-		$this->authenticateUser();
+		$this->authoriseUser();
 		yield "projectTypes" => ProjectTypeModel::all();
 		yield "title" => "Create a new project";
 	}
@@ -56,7 +57,7 @@ class ProjectsController extends HgitControllerBase {
 	 * @return the yield from the controller method
 	 */
 	public function create() {
-		$this->authenticateUser();
+		$this->authoriseUser();
 		$rawdata = $this->request->request->getAll(array(
 			"name", "description", "permPreset", "projectType"
 		));
@@ -66,7 +67,7 @@ class ProjectsController extends HgitControllerBase {
 			"name" => strip_tags($rawdata["name"]),
 			"description" => strip_tags($rawdata["description"]),
 			"permissionPreset" => $rawdata["permPreset"],
-			"user" => UserModel::find($this->session->user->db_id),
+			"user" => UserModel::find($this->session->hgituser->db_id),
 			"idProjectType" => intval($rawdata["projectType"])
 		);
 
@@ -79,7 +80,7 @@ class ProjectsController extends HgitControllerBase {
 			}
 
 			//save the new permission in the current session
-			$this->session->user->permissions[$project->id] = 255;
+			$this->session->hgituser->permissions[$project->id] = new AccessMask(255);
 
 			yield "errors" => false;
 			yield "redirect" => $this->linkInternal($project->slugname());

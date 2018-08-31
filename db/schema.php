@@ -21,17 +21,6 @@ Schema::createTable("projectType", function($table) {
 });
 
 ##
-## user #
-##
-Schema::createTable("user", function($table) {
-	$table->string("name", 40);
-	$table->string("email", 60)->nullable();
-	$table->string("authhash")->nullable();
-	$table->string("authdigest")->nullable();
-	$table->version("1512584325");
-});
-
-##
 ## project #
 ##
 Schema::createTable("project", function($table) {
@@ -135,6 +124,16 @@ Schema::createTable("groupAccess", function($table) {
 	$table->integer("idProject");
 	$table->integer("idGroup");
 	$table->version("1512584336");
+});
+
+##
+## user #
+##
+Schema::createTable("user", function($table) {
+	$table->string("name", 40);
+	$table->string("nick", 20);
+	$table->string("email", 60)->nullable();
+	$table->version("1535368976");
 });
 
 ##

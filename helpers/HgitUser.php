@@ -14,6 +14,7 @@ namespace holonet\hgit\helpers;
 
 use holonet\session\User;
 use holonet\hgit\models\UserModel;
+use holonet\hgit\models\ProjectModel;
 use holonet\hgit\models\GroupAccessModel;
 
 /**
@@ -43,12 +44,14 @@ class HgitUser extends User {
 			$this->groups[$group->id] = $group->name;
 		}
 
-		foreach ($user->projects as $maintainedProject) {
-			$this->permissions[$maintainedProject->id] = new AccessMask(255);
+		//allow the user access to all projects that allow anything to the public
+		foreach (ProjectModel::select(array("anyMask[!]" => 0)) as $publicProject) {
+			$this->permissions[$publicProject->idProject] = $publicProject->anyMask;
 		}
 
-		foreach ($user->userAccesses as $accessMask) {
-			$this->permissions[$accessMask->idProject] = $accessMask->mask;
+		//allow the user access to all projects that allow anything to "internal" users
+		foreach (ProjectModel::select(array("otherMask[!]" => 0)) as $internalProject) {
+			$this->permissions[$internalProject->idProject] = $internalProject->otherMask;
 		}
 
 		//@TODO this will probably not work as intended, just don't use groups atm
@@ -60,6 +63,11 @@ class HgitUser extends User {
 					$this->permissions[$accessMask->idProject] = $accessMask->mask;
 				}
 			}
+		}
+
+		//allow the user to access all his projects (the projects where he is maintainer)
+		foreach ($user->projects as $maintainedProject) {
+			$this->permissions[$maintainedProject->id] = new AccessMask(255);
 		}
 	}
 

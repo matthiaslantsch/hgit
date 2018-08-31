@@ -14,7 +14,7 @@ namespace holonet\hgit\controllers;
 
 use holonet\holofw\FWController;
 use holonet\hgit\models\ProjectModel;
-use holonet\hgit\helpers\HgitAuthHandler;
+use holonet\hgit\helpers\HgitAuthoriser;
 
 /**
  * abstract HgitControllerBase base class for every hgit controller
@@ -35,10 +35,11 @@ abstract class HgitControllerBase extends FWController {
 	 * @return void
 	 */
 	protected function accessControl(ProjectModel $project, string $function) {
-		if(!HgitAuthHandler::checkAuthorisation($project, $function)) {
+		if(!HgitAuthoriser::checkAuthorisation($project, $function)) {
 			//anonymous access failed, auth the user
-			$this->authenticateUser();
-			if(!HgitAuthHandler::checkAuthorisation($project, $function, $this->session->user)) {
+			//check if the user is allowed to access hgit as a "user" first
+			$this->checkAccess();
+			if(!HgitAuthoriser::checkAuthorisation($project, $function, $this->session->hgituser)) {
 				$this->notAllowed("Function '{$function}' for project '{$project->name}' was denied");
 			}
 		}
@@ -52,10 +53,10 @@ abstract class HgitControllerBase extends FWController {
 	 * @return array with projects that should be visible in the current context
 	 */
 	protected function getVisibleProjects() {
-		if($this->session === null || !isset($this->session->user)) {
+		if($this->session === null || !$this->session->has("hgituser")) {
 			return ProjectModel::select(array("anyMask[!]" => 0));
 		} else {
-			return ProjectModel::find(array_keys($this->session->user->permissions));
+			return ProjectModel::find(array_keys($this->session->hgituser->permissions));
 		}
 	}
 

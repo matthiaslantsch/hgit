@@ -46,6 +46,7 @@ class UserModel extends ModelBase {
 	 * @var	array with verification data
 	 */
 	public static $validate = array(
+		"nick" => array("presence", "uniqueness", "length" => array("min" => 4, "max" => 20)),
 		"name" => array("presence", "length" => array("min" => 4, "max" => 40)),
 		"email" => array("length" => array("max" => 60))
 	);

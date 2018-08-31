@@ -11,7 +11,7 @@
  */
 
  use holonet\hgit\models\ProjectModel;
- use holonet\hgit\helpers\HgitAuthHandler;
+ use holonet\hgit\helpers\HgitAuthoriser;
 
  /**
   * small helper function checking if the currently logged in user has access to this project in the way specified by the parameter
@@ -26,8 +26,11 @@
   * @return boolean true or false if the user is allowed to access that function or not
   */
 function isAllowedAction(ProjectModel $project, string $function = "see") {
-	global $session_user;
-	return HgitAuthHandler::checkAuthorisation($project, $function, $session_user);
+	if(isset($_SESSION["hgituser"])) {
+		return HgitAuthoriser::checkAuthorisation($project, $function, $_SESSION["hgituser"]);
+	} else {
+		return HgitAuthoriser::checkAuthorisation($project, $function);
+	}
 }
 
 /**

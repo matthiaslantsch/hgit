@@ -104,6 +104,7 @@ class ProjectModel extends ModelBase {
 					//allow only internal users to write code and wiki as well as read project files
 					$data["otherMask"] = AccessMask::READCODE | AccessMask::READWIKI
 						| AccessMask::WRITECODE | AccessMask::WRITEFILES | AccessMask::READFILES;
+					break;
 				default:
 					//set it to private
 					$data["otherMask"] = 0;
@@ -127,7 +128,7 @@ class ProjectModel extends ModelBase {
 	 */
 	public function getOtherMask() {
 		if($this->othermaskObj === null) {
-			$this->othermaskObj = new AccessMask($this->readAttribute("othermask"));
+			$this->othermaskObj = new AccessMask($this->readAttribute("otherMask"));
 		}
 		return $this->othermaskObj;
 	}
@@ -156,7 +157,7 @@ class ProjectModel extends ModelBase {
 	 * @return boolean on success or not
 	 */
 	public function save() {
-		if($this->othermaskObj !== null && $this->readAttribute("othermask") != $this->othermaskObj->mask) {
+		if($this->othermaskObj !== null && $this->readAttribute("otherMask") != $this->othermaskObj->mask) {
 			//get the new integer into the property of the model
 			$this->othermask = $this->othermaskObj->mask;
 		}
@@ -215,7 +216,7 @@ class ProjectModel extends ModelBase {
 		$sz = 'BKMGTP';
 		$factor = floor((strlen($bytes) - 1) / 3);
 		$ret = [
-			"maintainer" => $this->user->name,
+			"maintainer" => $this->user->nick,
 			"size" => sprintf("%.2f", $bytes / pow(1024, $factor)).@$sz[$factor]
 		];
 

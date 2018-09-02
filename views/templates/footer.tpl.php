@@ -9,8 +9,8 @@
   <script src="<?=linkJs("formular")?>"></script>
   <nav class="navbar fixed-bottom navbar-light bg-faded">
     <div class="container text-muted">
-      <div class="pull-left">&copy; 2017 Matthias Lantsch</div>
-      <div class="pull-right">HGIT 2.1.0</div>
+      <div class="pull-left">&copy; 2018 Matthias Lantsch</div>
+      <div class="pull-right">HGIT 2.2.0</div>
     </div>
   </nav>
   </body>

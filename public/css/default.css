@@ -1,0 +1,28 @@
+/* Deault project css file */
+.input-group {
+	min-width:100%;
+}
+
+textarea {
+	resize: vertical;
+}
+
+.agoField {
+	font-size: 12px;
+	color: gray;
+}
+
+body > .container {
+	margin-top: 100px;
+	margin-bottom: 60px;
+}
+
+.alertArea {
+	display: inline-block;
+}
+
+.alert {
+	padding: 5px 20px !important;
+	margin: auto;
+	text-align: center;
+}

@@ -218,7 +218,7 @@ class WebgitController extends HgitControllerBase {
 		yield "refspec" => $this->refspec;
 		yield "path" => $this->path;
 		yield "gitRepo" => $this->gitrepo;
-		if(isset($branches[$this->refspec])) {
+		if(in_array($this->refspec, $branches["branches"])) {
 			//it's a branch
 			yield "branch" => $this->refspec;
 		} else {

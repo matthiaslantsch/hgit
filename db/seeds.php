@@ -11,6 +11,7 @@ use holonet\hgit\models as models;
 models\ProjectTypeModel::create(array("name" => "php library"), true);
 models\ProjectTypeModel::create(array("name" => "php app"), true);
 models\ProjectTypeModel::create(array("name" => "holofw app"), true);
+models\ProjectTypeModel::create(array("name" => "other"), true);
 
 //include this as soon as we need it
 return;

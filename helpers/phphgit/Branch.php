@@ -66,7 +66,8 @@ class Branch extends objects\GitObject {
 					$line[1], //-> author
 					$line[2], //-> ago string
 					$line[3], //-> msg
-					$line[4] //-> timestamp
+					$line[4], //-> timestamp
+					$line[5] //-> parent hash
 				);
 			}
 		}

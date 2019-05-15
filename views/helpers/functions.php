@@ -69,11 +69,15 @@ function urlencodeall($x) {
  * @return string html markup with hightlighted code inside <pre><code> tags
  */
 function highlightCode($code, $lang = null) {
-	$hl = new Highlight\Highlighter();
-	if($lang !== null) {
-		$r = $hl->highlight($lang, $code);
+	if(class_exists("\Highlight\Highlighter")) {
+		$hl = new Highlight\Highlighter();
+		if($lang !== null) {
+			$r = $hl->highlight($lang, $code);
+		} else {
+			$r = $hl->highlightAuto($code);
+		}
+		return "<pre><code class=\"hljs {$r->language}\">{$r->value}</code></pre>";
 	} else {
-		$r = $hl->highlightAuto($code);
+		return "<pre><code>{$code}</code></pre>";
 	}
-	return "<pre><code class=\"hljs {$r->language}\">{$r->value}</code></pre>";
 }

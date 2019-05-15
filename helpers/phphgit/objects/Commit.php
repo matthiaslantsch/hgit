@@ -31,7 +31,7 @@ class Commit extends GitObject {
 	 * @access public
 	 * @var    string COMMITFORMAT | pretty print format for the commit
 	 */
-	public static $COMMITFORMAT = "%H:/$/:%an:/$/:%ar:/$/:%s:/$/:%ct";
+	public static $COMMITFORMAT = "%H:/$/:%an:/$/:%ar:/$/:%s:/$/:%ct:/$/:%P";
 
 	/**
 	 * property for the commit author
@@ -66,6 +66,14 @@ class Commit extends GitObject {
 	public $timestamp;
 
 	/**
+	 * property for the parent hash (null for initial commit)
+	 *
+	 * @access public
+	 * @var    string parenthash | the hash of the parent commit
+	 */
+	public $parenthash;
+
+	/**
 	 * constructor method taking the name for the branch
 	 *
 	 * @access public
@@ -75,13 +83,15 @@ class Commit extends GitObject {
 	 * @param  string ago | the ago string of the commit
 	 * @param  string msg | the msg of the commit
 	 * @param  string ts | the timestamp of the commit
+	 * @param  string parent | the parent commit hash
 	 */
-	public function __construct($repo, $hash, $author, $ago, $msg, $ts) {
+	public function __construct($repo, $hash, $author, $ago, $msg, $ts, $parent) {
 		parent::__construct($repo, $hash);
 		$this->author = $author;
 		$this->ago = $ago;
 		$this->msg = $msg;
 		$this->timestamp = $ts;
+		$this->parenthash = $parent;
 	}
 
 	/**
@@ -93,11 +103,12 @@ class Commit extends GitObject {
 	 * @return a newly created Commit object (of this class)
 	 */
 	public static function fromHash($repository, $hash) {
-		$cmd = sprintf("log -1 -U %s --abbrev-commit --pretty=format:'%s'",
+		$cmd = sprintf("log -1 -U %s --abbrev-commit --pretty=format:%s",
 			$hash, self::$COMMITFORMAT
 		);
 
 		$out = $repository->execGit($cmd);
+
 		if(strpos($out, "fatal") === 0 || strpos($out, ':/$/:') === false) {
 			throw new \Exception("Could not find commit by hash {$hash}", 10);
 		}
@@ -111,7 +122,8 @@ class Commit extends GitObject {
 			$line[1], //-> author
 			$line[2], //-> ago string
 			$line[3], //-> msg
-			$line[4] //-> timestamp
+			$line[4], //-> timestamp
+			$line[5] //-> parent hash
 		);
 	}
 
@@ -122,7 +134,11 @@ class Commit extends GitObject {
 	 * @return string diff output
 	 */
 	public function getDiff() {
-		return $this->execGit("diff {$this->hash}~ {$this->hash}");
+		if($this->parenthash == "") {
+			return $this->execGit("diff 4b825dc642cb6eb9a060e54bf8d69288fbee4904 {$this->hash}");
+		} else {
+			return $this->execGit("diff {$this->hash}~ {$this->hash}");
+		}
 	}
 
 	/**

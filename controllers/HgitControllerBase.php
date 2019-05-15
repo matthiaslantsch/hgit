@@ -56,7 +56,9 @@ abstract class HgitControllerBase extends FWController {
 		if($this->session === null || !$this->session->has("hgituser")) {
 			return ProjectModel::select(array("anyMask[!]" => 0));
 		} else {
-			return ProjectModel::find(array_keys($this->session->hgituser->permissions));
+			return ProjectModel::select(array(
+				"idProject" => array_keys($this->session->hgituser->permissions)
+			));
 		}
 	}
 

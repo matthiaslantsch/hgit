@@ -75,7 +75,8 @@ abstract class GitFile extends GitObject {
 				$out[1], //-> author
 				$out[2], //-> ago string
 				$out[3], //-> msg
-				$out[4] //-> timestamp
+				$out[4], //-> timestamp
+				$out[5] //-> parent hash
 			);
 		}
 

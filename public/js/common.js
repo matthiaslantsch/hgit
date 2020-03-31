@@ -26,12 +26,16 @@ $(function(){
 			});
 		} else {
 			$(".filterable").show();
-		}	
+		}
 	});
 
 	$(".copyButton").click(function() {
-		$("#copyFrom").focus();
-		$("#copyFrom").select();
+		const el = document.createElement('textarea');
+		el.value = $("#copyFrom").val();
+		document.body.appendChild(el);
+		el.select();
+		document.execCommand('copy');
+		document.body.removeChild(el);
 	});
 
 	$.each($(".simplemde"), function(ele) {

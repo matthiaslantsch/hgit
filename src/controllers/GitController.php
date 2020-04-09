@@ -10,7 +10,6 @@
 namespace holonet\hgit\controllers;
 
 use RuntimeException;
-use holonet\holofw\FWController;
 use holonet\hgit\helpers\GitResponse;
 use holonet\hgit\models\ProjectModel;
 use holonet\hgit\helpers\HgitAuthoriser;
@@ -20,7 +19,7 @@ use holonet\hgit\helpers\ProjectDirectoryService;
 /**
  * GitController is supposed to answer to requests of the git client.
  */
-class GitController extends FWController {
+class GitController extends HgitControllerBase {
 	/**
 	 * @var PromptAuthFlow $di_basicauth Basic auth authentication flow used for the backend
 	 */

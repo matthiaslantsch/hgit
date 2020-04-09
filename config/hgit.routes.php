@@ -50,9 +50,9 @@ $router->with("composer", function(NamespaceRouteBuilder $builder) {
 		"method" => "info"
 	));
 	$builder->get(array(
-		"url" => "search.json",
+		"url" => "notify/[projectName:?s]",
 		"controller" => ComposerController::class,
-		"method" => "search"
+		"method" => "notify"
 	));
 });
 

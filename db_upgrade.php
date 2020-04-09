@@ -29,6 +29,8 @@ $count = 0;
 foreach ($oldData as $project) {
 	unset($project['idProjectType']);
 
+	$project['name'] = str_replace('-', '/', $project);
+
 	$insert = sprintf('INSERT INTO project VALUES (%s)', implode(', ', array_fill(0, count($project), '?')));
 	$count += $newDb->queryChange($insert, $project);
 }

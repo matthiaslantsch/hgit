@@ -4,7 +4,7 @@
   <div class="form-group row">
     <label for="inputName" class="col-sm-2 col-form-label">Project Name</label>
     <div class="col-sm-10">
-      <input type="text" pattern="^[_A-z0-9-]{1,}$" maxlength="20" class="form-control" id="inputName" name ="name" placeholder="Project Name" required>
+      <input type="text" pattern="^[_A-z0-9/]{1,}$" maxlength="20" class="form-control" id="inputName" name ="name" placeholder="Project Name" required>
     </div>
     <div class="col-sm-10 form-control-feedback"></div>
   </div>

@@ -20,6 +20,11 @@ use holonet\hgit\helpers\ProjectDirectoryService;
  */
 class ComposerController extends HgitControllerBase {
 	/**
+	 * @var string[] DEV_VERSION_BRANCH_NAMES Names of branches to advertise as dev- versions
+	 */
+	public const DEV_VERSION_BRANCH_NAMES = array('master', 'develop');
+
+	/**
 	 * @var ProjectDirectoryService $di_directoryService Dependency injected project directory filesystem service
 	 */
 	public $di_directoryService;
@@ -40,16 +45,33 @@ class ComposerController extends HgitControllerBase {
 				$this->di_directoryService->projectDirectory($phplib)
 			);
 
-			$devComposerJson = $repo->getPathAtRef('develop', 'composer.json');
-			if ($devComposerJson !== null) {
-				$devComposerJson = json_decode($devComposerJson->getContent(), true);
-				$devComposerJson['version'] = 'dev-develop';
-				$devComposerJson['source'] = array(
-					'type' => 'git',
-					'url' => "https://{$_SERVER['HTTP_HOST']}".static::linkInternal("{$phplib->slugname()}/repo/{$phplib->slugname()}.git"),
-					'reference' => 'origin/develop'
-				);
-				$packages[$phplib->name] = array('dev-develop' => $devComposerJson);
+			$versionRefs = array_merge(
+				static::DEV_VERSION_BRANCH_NAMES,
+				array_column($repo->tags, 'name')
+			);
+			$versions = array();
+			foreach ($versionRefs as $ref) {
+				$atRefComposeJson = $repo->getPathAtRef('develop', 'composer.json');
+				if ($atRefComposeJson !== null) {
+					$atRefComposeJson = json_decode($atRefComposeJson->getContent(), true);
+					$atRefComposeJson['source'] = array(
+						'type' => 'git',
+						'url' => "{$this->request->getSchemeAndHttpHost()}{$this::linkInternal("{$phplib->slugname()}/repo/"."{$phplib->slugname()}.git")}",
+						'reference' => $ref
+					);
+
+					if (in_array($ref, static::DEV_VERSION_BRANCH_NAMES)) {
+						//prefix with dev- composer version prefix
+						$ref = "dev-{$ref}";
+					}
+
+					$atRefComposeJson['version'] = $ref;
+
+					$versions[$ref] = $atRefComposeJson;
+				}
+			}
+			if (!empty($versions)) {
+				$packages[$phplib->name] = $versions;
 			}
 		}
 		$this->view->set('packages', $packages);

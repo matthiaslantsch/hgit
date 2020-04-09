@@ -63,7 +63,7 @@ class GitService {
 	 * in order to access the git commands.
 	 * @param string $cmd The git subcommand to execute
 	 * @param string $path The path to execute the command in
-	 * @param bool $ignoreFailure Flag allowing to just return an empty string on command failure
+	 * @param bool $ignoreFailure Flag allowing to just return anyway command failure
 	 * @throws RuntimeException if the command failed and the ignoreFailure flag is false
 	 * @return string with the output of the git command
 	 */
@@ -82,7 +82,7 @@ class GitService {
 
 		if ($returnVal !== 0) {
 			if ($ignoreFailure) {
-				return '';
+				return $ret;
 			}
 
 			throw new RuntimeException("Error running git command '{$cmd}'({$returnVal}):\n {$ret}", $returnVal);

@@ -156,10 +156,11 @@ class Repository {
 	 * wrapper method passing the command to the git service
 	 * with the path of the repository.
 	 * @param string $cmd The git subcommand to execute
+	 * @param bool $ignoreFailure Flag allowing to just return anyway command failure
 	 * @return string the output of the git command
 	 */
-	public function execGit(string $cmd) {
-		return $this->gitservice->execGit($cmd, $this->path);
+	public function execGit(string $cmd, bool $ignoreFailure = false) {
+		return $this->gitservice->execGit($cmd, $this->path, $ignoreFailure);
 	}
 
 	/**
@@ -169,7 +170,7 @@ class Repository {
 	 * @return GitFile|null either a Blob object or a Tree object or null on failure
 	 */
 	public function getPathAtRef($refspec = 'master', $subpath = ''): ?GitFile {
-		$type = $this->execGit("cat-file -t {$refspec}:{$subpath}");
+		$type = $this->execGit("cat-file -t {$refspec}:{$subpath}", true);
 		if (mb_strpos($type, 'fatal') === 0) {
 			return null;
 		}

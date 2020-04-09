@@ -20,6 +20,18 @@ use holonet\hgit\models\enum\ProjectType;
  */
 abstract class HgitControllerBase extends FWController {
 	/**
+	 * facade method sorting the parameter data
+	 * "unslugs" the project name if one was submitted.
+	 */
+	public function __before(): void {
+		if ($this->request->attributes->has('projectName')) {
+			$this->request->attributes->set('projectName',
+				str_replace('-', '/', $this->request->attributes->get('projectName'))
+			);
+		}
+	}
+
+	/**
 	 * small helper method checking the authorisation on a project
 	 * calls the not allowed method to throw an exception if the access is denied.
 	 * @param ProjectModel $project The project that needs access to a function checked

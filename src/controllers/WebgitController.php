@@ -44,6 +44,7 @@ class WebgitController extends HgitControllerBase {
 	 * facade method sorting the parameter data and initialising the git context.
 	 */
 	public function __before(): void {
+		parent::__before();
 		if ($this->request->attributes->has('projectName')) {
 			/** @var ProjectModel $project */
 			$project = $this->di_repo->get(ProjectModel::class, array('name' => $this->request->attributes->get('projectName')));

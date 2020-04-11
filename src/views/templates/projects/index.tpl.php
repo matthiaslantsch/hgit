@@ -1,6 +1,6 @@
 <h3>Project Overview</h3>
 <?php if(isset($session_user)): ?>
-  <a href="<?=linkTo("projects/new")?>">Create a new project</a>
+  <a href="<?=$_urlhelper->linkTo("projects/new")?>">Create a new project</a>
 <?php endif; ?>
 <hr>
 <?php if(!empty($projects)): ?>
@@ -8,9 +8,9 @@
     <div class="row">
       <div class="col-md-9">
         <h4><?=$proj->name?></h4>
-        <!--<a class="nav-link" href="<?=linkTo("projects/{$proj->slugname()}")?>"><i class="fa fa-feed"></i> Activity</a>-->
+        <!--<a class="nav-link" href="<?=$_urlhelper->linkTo("projects/{$proj->slugname()}")?>"><i class="fa fa-feed"></i> Activity</a>-->
         <?php if(isAllowedAction($proj, "readCode", $session_user ?? null)): ?>
-          <a class="nav-link" href="<?=linkTo("{$proj->slugname()}/git")?>"><i class="fa fa-code-fork"></i> Git Repository</a>
+          <a class="nav-link" href="<?=$_urlhelper->linkTo("{$proj->slugname()}/git")?>"><i class="fa fa-code-fork"></i> Git Repository</a>
         <?php endif; ?>
       </div>
       <div class="col-md-3">
@@ -26,6 +26,6 @@
 <?php else: ?>
   There seems to be nothing here :(
   <?php if(isset($session_user)): ?>
-    <a href="<?=linkTo("projects/new")?>">Create a new project</a>
+    <a href="<?=$_urlhelper->linkTo("projects/new")?>">Create a new project</a>
   <?php endif; ?>
 <?php endif; ?>

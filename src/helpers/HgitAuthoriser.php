@@ -22,7 +22,7 @@ use holonet\http\error\NotAllowedException;
  * HgitAuthoriser class used to authorise a user using local permission masks.
  */
 class HgitAuthoriser implements Authoriser {
-	public const HGIT_USER_PERMISSION = 'hgit_user_access';
+	public const HGIT_USER_PERMISSION = 'hgit_use';
 
 	/**
 	 * @var AuthFlow $flow Reference to the authentication flow that uses this class

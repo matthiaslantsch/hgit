@@ -117,13 +117,14 @@ class ProjectDirectoryService {
 
 			return $bytestotal;
 		};
+
 		$bytes = $dirSize($projectDirectory);
 		$sz = 'BKMGTP';
-		$factor = (int)(mb_strlen((string)($bytes - 1 / 3)));
+		$factor = intval((strlen($bytes) - 1) / 3);
 		/** @psalm-suppress InvalidArrayOffset */
 		$ret = array(
 			'maintainer' => $projectDirectory->project->user->nick,
-			'size' => sprintf('%.2f', $bytes / 1024 ** $factor).@$sz[$factor]
+			'size' => sprintf('%.2f', $bytes / 1024 * $factor).@$sz[$factor]
 		);
 
 		$repo = $this->gitRepo($projectDirectory);

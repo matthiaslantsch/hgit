@@ -13,7 +13,7 @@
     <?php if(!empty($context->path)): ?>
       <tr>
         <td><i class="fa fa-level-up" aria-hidden="true"></i></td>
-        <td><a href="<?=linkTo(sprintf("%s/git/tree/%s/%s", $project->slugname(), $context->refspec, dirname($context->path)))?>">..</a></td>
+        <td><a href="<?=$_urlhelper->linkTo(sprintf("%s/git/tree/%s/%s", $project->slugname(), $context->refspec, dirname($context->path)))?>">..</a></td>
       </tr>
     <?php endif; ?>
     <?php foreach ($treeList as $object): ?>
@@ -26,14 +26,14 @@
           <?php endif; ?>
         </td>
         <td class="filter_crit" colspan="2">
-          <a href="<?=linkTo(sprintf("%s/git/%s/%s/%s", $project->slugname(), $object->type(), $context->refspec, urlencodeall($object->name)))?>">
+          <a href="<?=$_urlhelper->linkTo(sprintf("%s/git/%s/%s/%s", $project->slugname(), $object->type(), $context->refspec, urlencodeall($object->name)))?>">
             <?=basename($object->name)?>
           </a>
         </td>
         <td><?=$object->type()?></td>
         <td><?=($object->type() == "blob" ? $object->getFileSize() : "")?></td>
         <td colspan="4">
-          <a href="<?=linkTo(sprintf("%s/git/commit/%s", $project->slugname(), $object->lastCommit($context->refspec)->hash))?>">
+          <a href="<?=$_urlhelper->linkTo(sprintf("%s/git/commit/%s", $project->slugname(), $object->lastCommit($context->refspec)->hash))?>">
             <?=$object->lastCommit($context->refspec)->msg?>
           </a>
         </td>

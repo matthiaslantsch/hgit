@@ -69,7 +69,7 @@ class Blob extends GitFile {
 	 */
 	public function getFileSize(): string {
 		$sz = 'BKMGTP';
-		$factor = (int)(mb_strlen((string)($this->size - 1 / 3)));
+		$factor = intval((strlen($this->size) - 1) / 3);
 		/** @psalm-suppress InvalidArrayOffset */
 		return sprintf('%.2f', $this->size / 1024 ** $factor).@$sz[$factor];
 	}

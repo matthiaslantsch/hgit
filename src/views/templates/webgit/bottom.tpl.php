@@ -4,7 +4,7 @@
       <div class="sidebar-module sidebar-module-inset">
         <h4><?=ucfirst($key)?>:</h4>
        <?php foreach($brnchs as $branch): ?>
-          <p><a href="<?=linkTo(sprintf("%s/git/%s/%s/%s", $project->slugname(), $page, urlencodeall($branch), $context->path))?>">
+          <p><a href="<?=$_urlhelper->linkTo(sprintf("%s/git/%s/%s/%s", $project->slugname(), $page, urlencodeall($branch), $context->path))?>">
             <?=$branch?>
           </a></p>
         <?php endforeach; ?>

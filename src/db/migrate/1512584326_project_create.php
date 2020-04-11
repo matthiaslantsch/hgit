@@ -36,7 +36,7 @@ class ProjectCreateMigration extends Migration {
 			$t->integer('otherMask');
 			$t->integer('anyMask')->default(0);
 			$t->addReference('user');
-			$t->string('type', 10);
+			$t->string('type', 12);
 			$t->version('1512584326');
 		});
 	}

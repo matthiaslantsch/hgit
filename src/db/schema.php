@@ -18,56 +18,15 @@ if(!isset($database) || !$database instanceof Database) {
 $schema = $database->schema();
 
 ##
-## user #
-##
-$schema->createTable("user", function(TableBuilder $table) {
-	$table->string("nick");
-	$table->addColumn("externalid", "uuid");
-	$table->string("email")->nullable();
-	$table->version("1512584325");
-});
-
-##
-## project #
-##
-$schema->createTable("project", function(TableBuilder $table) {
-	$table->string("name", 20)->unique();
-	$table->text("description")->nullable();
-	$table->string("major", 10);
-	$table->string("minor", 10);
-	$table->string("fix", 10);
-	$table->integer("otherMask");
-	$table->integer("anyMask")->default(0);
-	$table->integer("idUser");
-	$table->string("type", 10);
-	$table->version("1512584326");
-});
-
-##
 ## activity #
 ##
 $schema->createTable("activity", function(TableBuilder $table) {
 	$table->text("content");
-	$table->integer("idUser")->nullable();
+	$table->integer("idUser");
 	$table->integer("idProject");
 	$table->string("type", 10);
 	$table->timestamps();
 	$table->version("1512584328");
-});
-
-##
-## issue #
-##
-$schema->createTable("issue", function(TableBuilder $table) {
-	$table->string("title", 40);
-	$table->text("description");
-	$table->string("targetVersion", 15)->nullable();
-	$table->integer("idProject");
-	$table->integer("author");
-	$table->string("type", 10);
-	$table->string("status", 10);
-	$table->timestamps();
-	$table->version("1512584331");
 });
 
 ##
@@ -90,16 +49,6 @@ $schema->createTable("group", function(TableBuilder $table) {
 });
 
 ##
-## userAccess #
-##
-$schema->createTable("userAccess", function(TableBuilder $table) {
-	$table->integer("mask");
-	$table->integer("idProject");
-	$table->integer("idUser");
-	$table->version("1512584335");
-});
-
-##
 ## groupAccess #
 ##
 $schema->createTable("groupAccess", function(TableBuilder $table) {
@@ -110,34 +59,68 @@ $schema->createTable("groupAccess", function(TableBuilder $table) {
 });
 
 ##
+## issue #
+##
+$schema->createTable("issue", function(TableBuilder $table) {
+	$table->string("title", 40);
+	$table->text("description");
+	$table->string("targetVersion", 15)->nullable();
+	$table->integer("idProject");
+	$table->integer("author");
+	$table->string("type", 10);
+	$table->string("status", 10);
+	$table->timestamps();
+	$table->version("1512584331");
+});
+
+##
+## project #
+##
+$schema->createTable("project", function(TableBuilder $table) {
+	$table->string("name", 20)->unique();
+	$table->text("description")->nullable();
+	$table->string("major", 10);
+	$table->string("minor", 10);
+	$table->string("fix", 10);
+	$table->integer("otherMask");
+	$table->integer("anyMask");
+	$table->integer("idUser");
+	$table->string("type", 12);
+	$table->version("1512584326");
+});
+
+##
+## user #
+##
+$schema->createTable("user", function(TableBuilder $table) {
+	$table->string("nick");
+	$table->addColumn("externalid", "uuid");
+	$table->string("email")->nullable();
+	$table->version("1512584325");
+});
+
+##
+## userAccess #
+##
+$schema->createTable("userAccess", function(TableBuilder $table) {
+	$table->integer("mask");
+	$table->integer("idProject");
+	$table->integer("idUser");
+	$table->version("1512584335");
+});
+
+##
 ## group2user #
 ##
 $schema->createResolutionTable("group", "user", "1512584334");
 
 ##
-## project references #
-##
-$schema->changeTable("project", function(TableBuilder $table) {
-	$table->addReference("user", "idUser", "idUser");
-	$table->version("1512584326");
-});
-
-##
 ## activity references #
 ##
 $schema->changeTable("activity", function(TableBuilder $table) {
+	$table->addReference("project", "idProject", "idProject");
 	$table->addReference("user", "idUser", "idUser");
-	$table->addReference("project", "idProject", "idProject");
 	$table->version("1512584328");
-});
-
-##
-## issue references #
-##
-$schema->changeTable("issue", function(TableBuilder $table) {
-	$table->addReference("project", "idProject", "idProject");
-	$table->addReference("user", "author", "idUser");
-	$table->version("1512584331");
 });
 
 ##
@@ -150,19 +133,36 @@ $schema->changeTable("comment", function(TableBuilder $table) {
 });
 
 ##
+## groupAccess references #
+##
+$schema->changeTable("groupAccess", function(TableBuilder $table) {
+	$table->addReference("group", "idGroup", "idGroup");
+	$table->addReference("project", "idProject", "idProject");
+	$table->version("1512584336");
+});
+
+##
+## issue references #
+##
+$schema->changeTable("issue", function(TableBuilder $table) {
+	$table->addReference("user", "author", "idUser");
+	$table->addReference("project", "idProject", "idProject");
+	$table->version("1512584331");
+});
+
+##
+## project references #
+##
+$schema->changeTable("project", function(TableBuilder $table) {
+	$table->addReference("user", "idUser", "idUser");
+	$table->version("1512584326");
+});
+
+##
 ## userAccess references #
 ##
 $schema->changeTable("userAccess", function(TableBuilder $table) {
 	$table->addReference("project", "idProject", "idProject");
 	$table->addReference("user", "idUser", "idUser");
 	$table->version("1512584335");
-});
-
-##
-## groupAccess references #
-##
-$schema->changeTable("groupAccess", function(TableBuilder $table) {
-	$table->addReference("project", "idProject", "idProject");
-	$table->addReference("group", "idGroup", "idGroup");
-	$table->version("1512584336");
 });

@@ -66,6 +66,9 @@ abstract class HgitControllerBase extends FWController {
 			$options = array('anyMask[!]' => 0);
 		} else {
 			$hgituser = $this->session->get('user');
+			if(empty($hgituser->permissions['projects'])) {
+				return array();
+			}
 			$options = array('idProject' => array_keys($hgituser->permissions['projects']));
 		}
 

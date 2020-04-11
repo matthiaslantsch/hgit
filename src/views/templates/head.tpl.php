@@ -15,11 +15,11 @@
 			integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 		<!-- font-awesome icons -->
 		<link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
-    <link type="text/css" rel="stylesheet" href="<?=linkCss("default")?>"/>
-    <link type="text/css" rel="stylesheet" href="<?=linkCss("highlight")?>"/>
+    <link type="text/css" rel="stylesheet" href="<?=$_urlhelper->linkCss("default")?>"/>
+    <link type="text/css" rel="stylesheet" href="<?=$_urlhelper->linkCss("highlight")?>"/>
 		<script>
 			function returnFWAlias() {
-				return "<?=linkTo()?>";
+				return "<?=$_urlhelper->linkTo('')?>";
 			}
 		</script>
 	</head>

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a1750e9d2b10f765bbf236544dfe8718",
+    "content-hash": "86e443cdfc142938c1a21a19a50276f1",
     "packages": [
         {
             "name": "erusev/parsedown",
@@ -54,17 +54,17 @@
         },
         {
             "name": "holonet/activerecord",
-            "version": "dev-develop",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
-                "url": "https://holonet.easylabs.ch/holonet-activerecord/repo/holonet-activerecord.git",
-                "reference": "origin/develop"
+                "url": "https://holonet.easylabs.ch/hgit/holonet-activerecord/repo/holonet-activerecord.git",
+                "reference": "2.1.0"
             },
             "require": {
-                "holonet/common": "dev-develop",
-                "holonet/dbconnect": "dev-develop",
-                "holonet/dbmigrate": "dev-develop",
-                "holonet/dbtypes": "dev-develop",
+                "holonet/common": "^1.3.0",
+                "holonet/dbconnect": "^1.0.0",
+                "holonet/dbmigrate": "^1.0.0",
+                "holonet/dbtypes": "^1.0.0",
                 "php": ">=7.3"
             },
             "require-dev": {
@@ -75,11 +75,6 @@
             "autoload": {
                 "psr-4": {
                     "holonet\\activerecord\\": "src"
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "holonet\\activerecord\\tests\\": "tests"
                 }
             },
             "notification-url": "https://holonet.easylabs.ch/composer/notify/",
@@ -99,19 +94,18 @@
                     "email": "matthias.lantsch@bluewin.ch"
                 }
             ],
-            "description": "ORM active record library with migrations",
-            "time": "2020-04-06T14:25:08+00:00"
+            "description": "ORM active record library"
         },
         {
             "name": "holonet/cli",
-            "version": "dev-develop",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
-                "url": "https://holonet.easylabs.ch/holonet-cli/repo/holonet-cli.git",
-                "reference": "origin/develop"
+                "url": "https://holonet.easylabs.ch/hgit/holonet-cli/repo/holonet-cli.git",
+                "reference": "1.1.0"
             },
             "require": {
-                "holonet/common": "dev-develop",
+                "holonet/common": "^1.3.0",
                 "php": ">=7.3"
             },
             "require-dev": {
@@ -137,22 +131,24 @@
                     "@php -d memory_limit=-1 vendor/vimeo/psalm/psalm"
                 ]
             },
+            "license": [
+                " GPL-3.0+"
+            ],
             "authors": [
                 {
                     "name": "matthias.lantsch",
                     "email": "matthias.lantsch@bluewin.ch"
                 }
             ],
-            "description": "Library used to create standardised cli applications in php",
-            "time": "2020-03-04T10:55:45+00:00"
+            "description": "Library used to create standardised cli applications in php"
         },
         {
             "name": "holonet/common",
-            "version": "dev-develop",
+            "version": "1.3.0",
             "source": {
                 "type": "git",
-                "url": "https://holonet.easylabs.ch/holonet-common/repo/holonet-common.git",
-                "reference": "origin/develop"
+                "url": "https://holonet.easylabs.ch/hgit/holonet-common/repo/holonet-common.git",
+                "reference": "1.3.0"
             },
             "require": {
                 "monolog/monolog": "^2.0",
@@ -193,25 +189,27 @@
                     "@php -d memory_limit=-1 vendor/vimeo/psalm/psalm"
                 ]
             },
+            "license": [
+                "WTFPL"
+            ],
             "authors": [
                 {
                     "name": "matthias.lantsch",
                     "email": "matthias.lantsch@bluewin.ch"
                 }
             ],
-            "description": "commonly used code in hn projects",
-            "time": "2020-03-30T13:37:07+00:00"
+            "description": "commonly used code in hn projects"
         },
         {
             "name": "holonet/dbconnect",
-            "version": "dev-develop",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://holonet.easylabs.ch/holonet-dbconnect/repo/holonet-dbconnect.git",
-                "reference": "origin/develop"
+                "url": "https://holonet.easylabs.ch/hgit/holonet-dbconnect/repo/holonet-dbconnect.git",
+                "reference": "1.0.0"
             },
             "require": {
-                "holonet/common": "dev-develop",
+                "holonet/common": "^1.3.0",
                 "php": ">=7.3"
             },
             "require-dev": {
@@ -247,21 +245,20 @@
                     "email": "matthias.lantsch@bluewin.ch"
                 }
             ],
-            "description": "Abstraction library to provide a \"pdo\" like interface to databases",
-            "time": "2020-03-10T11:57:41+00:00"
+            "description": "Abstraction library to provide a \"pdo\" like interface to databases"
         },
         {
             "name": "holonet/dbmigrate",
-            "version": "dev-develop",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://holonet.easylabs.ch/holonet-dbmigrate/repo/holonet-dbmigrate.git",
-                "reference": "origin/develop"
+                "url": "https://holonet.easylabs.ch/hgit/holonet-dbmigrate/repo/holonet-dbmigrate.git",
+                "reference": "1.0.0"
             },
             "require": {
-                "holonet/common": "dev-develop",
-                "holonet/dbconnect": "dev-develop",
-                "holonet/dbtypes": "dev-develop",
+                "holonet/common": "^1.3.0",
+                "holonet/dbconnect": "^1.0.0",
+                "holonet/dbtypes": "^1.0.0",
                 "php": ">=7.3"
             },
             "require-dev": {
@@ -298,16 +295,15 @@
                     "email": "matthias.lantsch@bluewin.ch"
                 }
             ],
-            "description": "Database state migration abstraction library",
-            "time": "2020-04-11T16:27:31+00:00"
+            "description": "Database state migration abstraction library"
         },
         {
             "name": "holonet/dbtypes",
-            "version": "dev-develop",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://holonet.easylabs.ch/holonet-dbtypes/repo/holonet-dbtypes.git",
-                "reference": "origin/develop"
+                "url": "https://holonet.easylabs.ch/hgit/holonet-dbtypes/repo/holonet-dbtypes.git",
+                "reference": "1.0.0"
             },
             "require": {
                 "php": ">=7.3"
@@ -339,25 +335,24 @@
                     "email": "matthias.lantsch@bluewin.ch"
                 }
             ],
-            "description": "Database types and type casting in common library",
-            "time": "2020-02-27T12:51:51+00:00"
+            "description": "Database types and type casting in common library"
         },
         {
             "name": "holonet/holofw",
-            "version": "dev-develop",
+            "version": "3.2.0",
             "source": {
                 "type": "git",
-                "url": "https://holonet.easylabs.ch/holonet-holofw/repo/holonet-holofw.git",
-                "reference": "origin/develop"
+                "url": "https://holonet.easylabs.ch/hgit/holonet-holofw/repo/holonet-holofw.git",
+                "reference": "3.2.0"
             },
             "require": {
-                "holonet/activerecord": "dev-develop",
-                "holonet/cli": "dev-develop",
-                "holonet/common": "dev-develop",
-                "holonet/dbconnect": "dev-develop",
-                "holonet/dbmigrate": "dev-develop",
-                "holonet/dbtypes": "dev-develop",
-                "holonet/http": "dev-develop",
+                "holonet/activerecord": "^2.1.0",
+                "holonet/cli": "^1.1.0",
+                "holonet/common": "^1.3.0",
+                "holonet/dbconnect": "^1.0.0",
+                "holonet/dbmigrate": "^1.0.0",
+                "holonet/dbtypes": "^1.0.0",
+                "holonet/http": "^1.0.0",
                 "php": ">=7.3, <7.4",
                 "symfony/dotenv": "^v5.0",
                 "symfony/http-foundation": "^v5.0"
@@ -402,19 +397,18 @@
                     "email": "matthias.lantsch@bluewin.ch"
                 }
             ],
-            "description": "Holonet php web framework",
-            "time": "2020-04-11T16:26:29+00:00"
+            "description": "Holonet php web framework"
         },
         {
             "name": "holonet/http",
-            "version": "dev-develop",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://holonet.easylabs.ch/holonet-http/repo/holonet-http.git",
-                "reference": "origin/develop"
+                "url": "https://holonet.easylabs.ch/hgit/holonet-http/repo/holonet-http.git",
+                "reference": "1.0.0"
             },
             "require": {
-                "holonet/common": "dev-develop",
+                "holonet/common": "^1.3.0",
                 "php": ">=7.3",
                 "symfony/http-foundation": "^v5.0"
             },
@@ -445,16 +439,15 @@
                     "email": "matthias.lantsch@bluewin.ch"
                 }
             ],
-            "description": "Abstract routing middleware using the symfony http abstraction",
-            "time": "2020-03-17T20:20:27+00:00"
+            "description": "Abstract routing middleware using the symfony http abstraction"
         },
         {
             "name": "holonet/riddle",
-            "version": "dev-develop",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://holonet.easylabs.ch/holonet-riddle/repo/holonet-riddle.git",
-                "reference": "origin/develop"
+                "url": "https://holonet.easylabs.ch/hgit/holonet-riddle/repo/holonet-riddle.git",
+                "reference": "1.0.0"
             },
             "require": {
                 "ext-curl": "*",
@@ -493,31 +486,23 @@
                     "email": "matthias.lantsch@bluewin.ch"
                 }
             ],
-            "description": "Library to interact with the Sphinx IDP Provider on behalf of a client application",
-            "time": "2020-04-09T08:05:08+00:00"
+            "description": "Library to interact with the Sphinx IDP Provider on behalf of a client application"
         },
         {
             "name": "holonet/sphinxauth",
-            "version": "dev-develop",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://holonet.easylabs.ch/holonet-sphinxauth/repo/holonet-sphinxauth.git",
-                "reference": "origin/develop"
+                "url": "https://holonet.easylabs.ch/hgit/holonet-sphinxauth/repo/holonet-sphinxauth.git",
+                "reference": "1.0.0"
             },
             "require": {
-                "holonet/holofw": "dev-develop",
-                "holonet/riddle": "dev-develop",
+                "holonet/holofw": "^3.2.0",
+                "holonet/riddle": "^1.0.0",
                 "php": ">=7.3"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^2.11",
-                "holonet/activerecord": "dev-develop",
-                "holonet/cli": "dev-develop",
-                "holonet/common": "dev-develop",
-                "holonet/dbconnect": "dev-develop",
-                "holonet/dbmigrate": "dev-develop",
-                "holonet/dbtypes": "dev-develop",
-                "holonet/http": "dev-develop",
                 "vimeo/psalm": "^3.5"
             },
             "type": "library",
@@ -546,8 +531,7 @@
                     "email": "matthias.lantsch@bluewin.ch"
                 }
             ],
-            "description": "Library to interact with the Sphinx IDP Provider on behalf of a holonet framework application",
-            "time": "2020-03-30T13:55:37+00:00"
+            "description": "Library to interact with the Sphinx IDP Provider on behalf of a holonet framework application"
         },
         {
             "name": "monolog/monolog",
@@ -2635,20 +2619,6 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-03-30T11:42:42+00:00"
         },
         {
@@ -2841,20 +2811,6 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-03-27T16:56:45+00:00"
         },
         {
@@ -3435,20 +3391,6 @@
                 "debug",
                 "dump"
             ],
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-03-27T16:56:45+00:00"
         },
         {
@@ -3691,18 +3633,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "holonet/common": 20,
-        "holonet/holofw": 20,
-        "holonet/http": 20,
-        "holonet/cli": 20,
-        "holonet/dbconnect": 20,
-        "holonet/activerecord": 20,
-        "holonet/dbtypes": 20,
-        "holonet/dbmigrate": 20,
-        "holonet/sphinxauth": 20,
-        "holonet/riddle": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

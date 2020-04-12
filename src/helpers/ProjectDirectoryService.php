@@ -120,7 +120,7 @@ class ProjectDirectoryService {
 
 		$bytes = $dirSize($projectDirectory);
 		$sz = 'BKMGTP';
-		$factor = intval((strlen($bytes) - 1) / 3);
+		$factor = (int)((mb_strlen((string)$bytes) - 1) / 3);
 		/** @psalm-suppress InvalidArrayOffset */
 		$ret = array(
 			'maintainer' => $projectDirectory->project->user->nick,

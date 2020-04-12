@@ -15,7 +15,7 @@
         <a target="_blank" href="https://icons8.de/icons/set/git">Git icon</a> icon by <a target="_blank" href="https://icons8.de">Icons8</a>
       </div>
       <div class="pull-right">
-        HGIT 2.2.0
+        HGIT 2.3.0
       </div>
     </div>
   </nav>

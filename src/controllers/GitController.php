@@ -36,7 +36,7 @@ class GitController extends HgitControllerBase {
 	 * @param string $projectName The name of the project that is being accessed
 	 * @param string $path The subpath of the file in the repo that is being accessed
 	 */
-	public function repo(string $projectName, string $path): void {
+	public function repo(string $projectName, string $repoName, string $path): void {
 		/** @var ProjectModel $project */
 		$project = $this->di_repo->get(ProjectModel::class, array('name' => $this->request->attributes->get('projectName')));
 		if ($project === null) {
@@ -46,20 +46,21 @@ class GitController extends HgitControllerBase {
 		}
 
 		$repository = $this->di_directoryService->gitRepo(
-			$this->di_directoryService->projectDirectory($project)
+			$this->di_directoryService->projectDirectory($project),
+			$repoName
 		);
 
 		if (
-			$this->request->query->has('service') && $this->request->query->get('service') === 'git-upload-pack'
-			|| mb_strstr($path, '/') === '/git-upload-pack' && $this->request->getMethod() === 'POST'
+			$this->request->query->get('service') === 'git-upload-pack'
+			|| $path === 'git-upload-pack' && $this->request->getMethod() === 'POST'
 		) {
 			//read access
 			if (!$this->accessControl($project, 'readCode')) {
 				return;
 			}
 		} elseif (
-			$this->request->query->has('service') && $this->request->query->get('service') === 'git-receive-pack'
-			|| mb_strstr($path, '/') === '/git-receive-pack' && $this->request->getMethod() === 'POST'
+			$this->request->query->get('service') === 'git-receive-pack'
+			|| $path === 'git-receive-pack' && $this->request->getMethod() === 'POST'
 		) {
 			//write access
 			if (!$this->accessControl($project, 'writeCode')) {
@@ -67,10 +68,10 @@ class GitController extends HgitControllerBase {
 			}
 		} else {
 			//not sure what requests are sent from clients
-			throw new RuntimeException("Unknown type of git request '{$this->request->__toString()}'");
+			throw new RuntimeException((mb_strstr($path, '/')."Unknown type of git request '{$path}'{$this->request->__toString()}'"));
 		}
 
-		$this->response = new GitResponse($repository, $path);
+		$this->response = new GitResponse($repository, "{$repoName}/{$path}");
 		if (isset($this->session) && $this->session->has('user')) {
 			$this->response->setUser($this->session->get('user'));
 		}

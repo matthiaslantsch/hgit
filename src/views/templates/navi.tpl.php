@@ -18,7 +18,7 @@
             <?php endif; ?>
           -->
           <?php if(isAllowedAction($project, "readCode", $session_user ?? null)): ?>
-            <a class="nav-link nav-item" href="<?=$_urlhelper->linkTo("{$project->slugname()}/git")?>"><i class="fa fa-code-fork"></i> Git Repository</a>
+            <a class="nav-link nav-item" href="<?=$_urlhelper->linkTo("{$project->slugname()}/repo")?>"><i class="fa fa-code-fork"></i> Git Repository</a>
           <!--<li class="nav-item"><a class="nav-link" href="<?=$_urlhelper->linkTo("{$project->slugname()}/issues")?>"><i class="fa fa-tasks"></i> Issues</a></li>-->
           <?php endif; ?>
           <!--

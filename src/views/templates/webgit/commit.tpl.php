@@ -5,7 +5,7 @@
     </h4>
     <p><a href="<?=$_urlhelper->linkTo("user/{$commit->author}")?>"><?=$commit->author?></a> (<?=$commit->ago?>)</p>
     <p><?=$commit->msg?></p>
-    <a href="<?=$_urlhelper->linkTo(sprintf("%s/git/tree/%s", $project->slugname(), $commit->hash))?>">Browse Files</a>
+    <a href="<?=$_urlhelper->linkTo(sprintf("%s/repo/%s/tree/%s", $project->slugname(), $repoName, $commit->hash))?>">Browse Files</a>
   </div>
   <div class="card-block">
     <ul class="list-unstyled">
@@ -18,14 +18,14 @@
               Changed file
             <?php endif; ?>
             <a class="filter_crit"
-              href="<?=$_urlhelper->linkTo(sprintf("%s/git/blob/%s/%s", $project->slugname(), $commit->hash, urlencodeall($change->newBlob->name)))?>">
+              href="<?=$_urlhelper->linkTo(sprintf("%s/repo/%s/blob/%s/%s", $project->slugname(), $repoName, $commit->hash, $change->newBlob->name))?>">
               <?=basename($change->newBlob->name)?>
             </a>
-            <?=highlightCode(htmlspecialchars($change->getDiff()), "diff")?>
+            <?=highlightCode($change->getDiff(), "diff")?>
           <?php else: ?>
             Removed file
             <a class="filter_crit"
-               href="<?=$_urlhelper->linkTo(sprintf("%s/git/blob/%s/%s", $project->slugname(), $commit->parenthash, urlencodeall($change->oldBlob->name)))?>">
+               href="<?=$_urlhelper->linkTo(sprintf("%s/repo/%s/blob/%s/%s", $project->slugname(), $repoName, $commit->parenthash, $change->oldBlob->name))?>">
               <?=basename($change->oldBlob->name)?>
             </a>
           <?php endif; ?>

@@ -63,8 +63,11 @@ class WebgitController extends HgitControllerBase {
 			$this->view->set('cloneUrl', "{$this->request->getSchemeAndHttpHost()}{$this::linkInternal("{$project->slugname()}/repo/"."{$project->slugname()}.git")}");
 
 			$this->gitrepo = $this->di_directoryService->gitRepo(
-				$this->di_directoryService->projectDirectory($project)
+				$this->di_directoryService->projectDirectory($project),
+				$this->request->attributes->get('repo')
 			);
+
+			$this->view->set('repoName', basename($this->gitrepo->path));
 
 			$this->context = new GitContext(
 				$this->gitrepo,
@@ -101,9 +104,10 @@ class WebgitController extends HgitControllerBase {
 	 * commit method showing the details about a commit
 	 * GET /[projectName:a]/git/commit/[hash:h].
 	 * @param string $projectName The name of the project that is being accessed
+	 * @param string $repoName Name of the repository under the project we are accessing
 	 * @param string $hash The hash of the commit to be shown in detail
 	 */
-	public function commit(string $projectName, string $hash): void {
+	public function commit(string $projectName, string $repoName, string $hash): void {
 		$this->buildwebgitNavi();
 		$this->view->set('commit', $this->gitrepo->commitByHash($hash));
 		$this->view->set('page', 'log');

@@ -10,7 +10,7 @@
         <h4><?=$proj->name?></h4>
         <!--<a class="nav-link" href="<?=$_urlhelper->linkTo("projects/{$proj->slugname()}")?>"><i class="fa fa-feed"></i> Activity</a>-->
         <?php if(isAllowedAction($proj, "readCode", $session_user ?? null)): ?>
-          <a class="nav-link" href="<?=$_urlhelper->linkTo("{$proj->slugname()}/git")?>"><i class="fa fa-code-fork"></i> Git Repository</a>
+          <a class="nav-link" href="<?=$_urlhelper->linkTo("{$proj->slugname()}/repo")?>"><i class="fa fa-code-fork"></i> Git Repository</a>
         <?php endif; ?>
       </div>
       <div class="col-md-3">

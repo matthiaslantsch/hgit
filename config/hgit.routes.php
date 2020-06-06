@@ -74,29 +74,10 @@ $router->with("projects", function(NamespaceRouteBuilder $builder) {
 });
 
 /**
- * The rest of the CRUD methods and also some other functions
- * are behind an url that begins with the project name
- */
-$router->with("[projectName:s]", function(NamespaceRouteBuilder $builder) {
-	//show the overview for a project
-	$builder->get(array(
-		"url" => "",
-		"controller" => ProjectsController::class,
-		"method" => "show"
-	));
-	//expose the git repository to a git client via http
-	$builder->any(array(
-		"url" => "repo/[path:*]",
-		"controller" => GitController::class,
-		"method" => "repo"
-	));
-});
-
-/**
  * All the webgit interface methods
  * are behind an url that begins with the project name and /git
  */
-$router->with("[projectName:s]/git", function(NamespaceRouteBuilder $builder) {
+$router->with("[projectName:s]/repo/[repo:?]", function(NamespaceRouteBuilder $builder) {
 	//for the root of the webgit interface, show the tree view at the root of the repo
 	$builder->index(array(
 		"controller" => WebgitController::class,
@@ -137,5 +118,24 @@ $router->with("[projectName:s]/git", function(NamespaceRouteBuilder $builder) {
 		"url" => "raw/[refspec:?]/[path:?*]",
 		"controller" => WebgitController::class,
 		"method" => "raw"
+	));
+	//catch all to expose the git repository to a git client via http
+	$builder->any(array(
+		"url" => "[path:*]",
+		"controller" => GitController::class,
+		"method" => "repo"
+	));
+});
+
+/**
+ * The rest of the CRUD methods and also some other functions
+ * are behind an url that begins with the project name
+ */
+$router->with("[projectName:s]", function(NamespaceRouteBuilder $builder) {
+	//show the overview for a project
+	$builder->get(array(
+		"url" => "",
+		"controller" => ProjectsController::class,
+		"method" => "show"
 	));
 });

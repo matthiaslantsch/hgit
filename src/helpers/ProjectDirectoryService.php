@@ -134,10 +134,15 @@ class ProjectDirectoryService {
 
 	/**
 	 * @param ProjectDirectory $projectDir The project directory to open
+	 * @param string|null $repoName The name of the repository in the given project to access (default to standard project repo)
 	 * @return Repository git repository object for a given project directory
 	 */
-	public function gitRepo(ProjectDirectory $projectDir): Repository {
-		return $this->di_gitservice->accessRepository($projectDir->subpath('REPO', "{$projectDir->project->slugname()}.git"));
+	public function gitRepo(ProjectDirectory $projectDir, string $repoName = null): Repository {
+		if ($repoName === null) {
+			$repoName = "{$projectDir->project->slugname()}.git";
+		}
+
+		return $this->di_gitservice->accessRepository($projectDir->subpath('REPO', $repoName));
 	}
 
 	/**

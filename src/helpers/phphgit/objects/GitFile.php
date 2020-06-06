@@ -51,7 +51,6 @@ abstract class GitFile extends GitObject {
 			$cmd = "log -n 1 --abbrev-commit --pretty=format:'".Commit::COMMIT_FORMAT."' {$refspec} -- {$this->name}";
 			$out = $this->execGit($cmd);
 			if (mb_strpos($out, ':/$/:') === false) {
-//				dd($cmd);
 				throw new Exception('Failed to get last commit');
 			}
 

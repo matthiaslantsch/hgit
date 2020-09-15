@@ -13,7 +13,7 @@
     <?php if(!empty($context->path)): ?>
       <tr>
         <td><i class="fa fa-level-up" aria-hidden="true"></i></td>
-        <td><a href="<?=$_urlhelper->linkTo(sprintf("%s/repo/%s/tree/%s/%s", $project->slugname(), $repoName, $context->refspec, dirname($context->path)))?>">..</a></td>
+        <td><a href="<?=linkWebgit('tree', $project, $context->refspec, dirname($context->path))?>">..</a></td>
       </tr>
     <?php endif; ?>
     <?php foreach ($treeList as $object): ?>
@@ -26,14 +26,14 @@
           <?php endif; ?>
         </td>
         <td class="filter_crit" colspan="2">
-          <a href="<?=$_urlhelper->linkTo(sprintf("%s/repo/%s/%s/%s/%s", $project->slugname(), $repoName, $object->type(), $context->refspec, $object->name))?>">
+          <a href="<?=linkWebgit($object->type(), $project, $context->refspec, $object->name)?>">
             <?=basename($object->name)?>
           </a>
         </td>
         <td><?=$object->type()?></td>
         <td><?=($object->type() == "blob" ? $object->getFileSize() : "")?></td>
         <td colspan="4">
-          <a href="<?=$_urlhelper->linkTo(sprintf("%s/repo/%s/commit/%s", $project->slugname(), $repoName, $object->lastCommit($context->refspec)->hash))?>">
+          <a href="<?=linkWebgit('commit', $project, $object->lastCommit($context->refspec)->hash)?>">
             <?=$object->lastCommit($context->refspec)->msg?>
           </a>
         </td>

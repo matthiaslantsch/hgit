@@ -7,7 +7,7 @@
  * @author  Matthias Lantsch <matthias.lantsch@bluewin.ch>
  */
 
-namespace holonet\hgit\helpers;
+namespace holonet\hgit\services;
 
 use Exception;
 use RuntimeException;
@@ -18,6 +18,7 @@ use RecursiveDirectoryIterator;
 use holonet\common\FilesystemUtils;
 use holonet\hgit\models\ProjectModel;
 use holonet\common\collection\Registry;
+use holonet\hgit\helpers\ProjectDirectory;
 use holonet\hgit\helpers\phphgit\Repository;
 use holonet\common\error\BadEnvironmentException;
 
@@ -25,38 +26,52 @@ use holonet\common\error\BadEnvironmentException;
  * ProjectDirectoryService is meant to bridge between the filesystem project directories and the db project entries.
  */
 class ProjectDirectoryService {
-	/**
-	 * @var Context $di_context The current fw application context
-	 */
-	public $di_context;
+	public Context $di_context;
 
-	/**
-	 * @var GitService $di_gitservice Dependency injected git command service
-	 */
-	public $di_gitservice;
+	public GitService $di_gitservice;
 
-	/**
-	 * @var Registry $di_registry Global config values registry
-	 */
-	public $di_registry;
+	public Registry $di_registry;
 
 	/**
 	 * @var string $projectDir The root directory for all projects
 	 */
-	private $projectDir;
+	private string $projectDir;
+
+	/**
+	 * di initialising function getting the project root directory and falling back
+	 * to defaults if it wasn't configured.
+	 * @throws BadEnvironmentException if the project root directory does not exist
+	 */
+	public function __construct() {
+		$rootpth = $this->di_registry->get('projectRoot');
+		if ($rootpth === null) {
+			//default to var/projects/
+			$root = $this->di_context->varPath('projects');
+			if (!file_exists($root)) {
+				mkdir($root, 0755);
+			}
+		} else {
+			$root = realpath($rootpth);
+		}
+
+		if ($root === false) {
+			throw new BadEnvironmentException("Project root directory '{$rootpth}' does not exist");
+		}
+		$this->projectDir = $root;
+	}
 
 	/**
 	 * function creating a new project directory according to standards.
 	 * @param ProjectModel $project Project model instance that the directory will belong to
 	 * @throws Exception if a filesystem operation failed
 	 */
-	public function create($project): void {
+	public function create(ProjectModel $project): void {
 		$basepath = FilesystemUtils::dirpath($this->projectDir, $project->slugname());
 		if (file_exists($basepath)) {
 			throw new RuntimeException("Project directory '{$basepath}' already exists");
 		}
 
-		$tempnewdir = sys_get_temp_dir().DIRECTORY_SEPARATOR.$project->slugname().'_temp';
+		$tempnewdir = sys_get_temp_dir().\DIRECTORY_SEPARATOR.$project->slugname().'_temp';
 		if (file_exists($tempnewdir)) {
 			FilesystemUtils::rrmdir($tempnewdir);
 		}
@@ -64,11 +79,11 @@ class ProjectDirectoryService {
 		mkdir($tempnewdir);
 
 		//create git repository folder
-		mkdir($tempnewdir.DIRECTORY_SEPARATOR.'REPO');
-		$gitRepo = $tempnewdir.DIRECTORY_SEPARATOR.'REPO'.DIRECTORY_SEPARATOR.$project->slugname().'.git';
+		mkdir($tempnewdir.\DIRECTORY_SEPARATOR.'REPO');
+		$gitRepo = $tempnewdir.\DIRECTORY_SEPARATOR.'REPO'.\DIRECTORY_SEPARATOR.$project->slugname().'.git';
 
 		//create the main git repository
-		$tempdir = sys_get_temp_dir().DIRECTORY_SEPARATOR.basename($gitRepo);
+		$tempdir = sys_get_temp_dir().\DIRECTORY_SEPARATOR.basename($gitRepo);
 		FilesystemUtils::rrmdir($tempdir);
 		$this->di_gitservice->execGit("init --bare {$gitRepo}");
 
@@ -104,7 +119,7 @@ class ProjectDirectoryService {
 	 * @param ProjectDirectory $projectDirectory The project directory we are working with
 	 * @return array associative with statistics about the given project
 	 */
-	public function getStatistics(ProjectDirectory $projectDirectory) {
+	public function getStatistics(ProjectDirectory $projectDirectory): array {
 		//get the size of the project directory
 		$dirSize = static function ($path): int {
 			$bytestotal = 0;
@@ -137,7 +152,7 @@ class ProjectDirectoryService {
 	 * @param string|null $repoName The name of the repository in the given project to access (default to standard project repo)
 	 * @return Repository git repository object for a given project directory
 	 */
-	public function gitRepo(ProjectDirectory $projectDir, string $repoName = null): Repository {
+	public function gitRepo(ProjectDirectory $projectDir, ?string $repoName = null): Repository {
 		if ($repoName === null) {
 			$repoName = "{$projectDir->project->slugname()}.git";
 		}
@@ -146,34 +161,11 @@ class ProjectDirectoryService {
 	}
 
 	/**
-	 * di initialising function getting the project root directory and falling back
-	 * to defaults if it wasn't configured.
-	 * @throws BadEnvironmentException if the project root directory does not exist
-	 */
-	public function init(): void {
-		$rootpth = $this->di_registry->get('projectRoot');
-		if ($rootpth === null) {
-			//default to var/projects/
-			$root = $this->di_context->varPath('projects');
-			if (!file_exists($root)) {
-				mkdir($root, 0755);
-			}
-		} else {
-			$root = realpath($rootpth);
-		}
-
-		if ($root === false) {
-			throw new BadEnvironmentException("Project root directory '{$rootpth}' does not exist");
-		}
-		$this->projectDir = $root;
-	}
-
-	/**
 	 * @param ProjectModel $projectModel Project model to notify a download on
 	 * @param string $version String with the full version that was installed
 	 */
 	public function notifyDownload(ProjectModel $projectModel, string $version): void {
-		file_put_contents($this->projectDirectory($projectModel)->subpath('downloads'), "{$version}\n", FILE_APPEND);
+		file_put_contents($this->projectDirectory($projectModel)->subpath('downloads'), "{$version}\n", \FILE_APPEND);
 	}
 
 	/**

@@ -12,50 +12,40 @@ namespace holonet\hgit\helpers\phphgit;
 use LogicException;
 use RuntimeException;
 use holonet\common\FilesystemUtils;
-use holonet\hgit\helpers\GitService;
+use holonet\hgit\services\GitService;
 use holonet\hgit\helpers\phphgit\objects\Tag;
 use holonet\hgit\helpers\phphgit\objects\Blob;
 use holonet\hgit\helpers\phphgit\objects\Commit;
 use holonet\hgit\helpers\phphgit\objects\GitFile;
 
-/**
- * The Repository class is used to wrap around a git repo on the file system.
- */
 class Repository {
 	/**
 	 * @var Branch[] $branches Array with the branches in object form, indexed by name
 	 */
-	public $branches = array();
+	public array $branches = array();
 
 	/**
 	 * @var string $path The path to the repository on the filesystem
 	 */
-	public $path;
+	public string $path;
 
 	/**
 	 * @var Tag[] $tags Array with the tags in object form, indexed by name
 	 */
-	public $tags = array();
+	public array $tags = array();
 
 	/**
 	 * @var bool $workingDir Flag indicating whether work tree operation should be allowed to be run on this repo
 	 */
-	public $workingDir = false;
+	public bool $workingDir = false;
 
-	/**
-	 * @var GitService $gitservice Reference to the service object
-	 */
-	private $gitservice;
+	private GitService $gitservice;
 
-	/**
-	 * @param GitService $service Reference to the service object
-	 * @param string the path to the repository
-	 */
 	public function __construct(GitService $service, string $path) {
 		$this->gitservice = $service;
 		$this->path = FilesystemUtils::dirpath($path);
 
-		$bare = $this->execGit('rev-parse --is-bare-repository ');
+		$bare = $this->execGit('rev-parse --is-bare-repository');
 		if (mb_strpos($bare, 'fatal: Not a git repository') !== false) {
 			throw new RuntimeException('The given path is not a git repository');
 		}
@@ -94,7 +84,7 @@ class Repository {
 	 * @param string $content A string with content for the file to be set
 	 * @return string the output of the git add command
 	 */
-	public function add($filename, $content = null): string {
+	public function add(string $filename, ?string $content = null): string {
 		if (!$this->workingDir) {
 			throw new LogicException("The operation 'git add' can only be run on a work tree");
 		}
@@ -117,7 +107,7 @@ class Repository {
 	 * @param bool $create Flag indicating whether a -b flag should be added
 	 * @return string the output of the git checkout command
 	 */
-	public function checkout($branch, $create = false): string {
+	public function checkout(string $branch, bool $create = false): string {
 		if (!$this->workingDir) {
 			throw new LogicException("The operation 'git checkout' can only be run on a work tree");
 		}
@@ -134,7 +124,7 @@ class Repository {
 	 * @param string $msg The message for the commit
 	 * @return string the output of the git commit command
 	 */
-	public function commit($msg): string {
+	public function commit(string $msg): string {
 		if (!$this->workingDir) {
 			throw new LogicException("The operation 'git commit' can only be run on a work tree");
 		}
@@ -143,11 +133,6 @@ class Repository {
 		return $this->execGit("commit -m {$msg}");
 	}
 
-	/**
-	 * get a commit in this repository by its hash.
-	 * @param string $hash The hash of the commit to find
-	 * @return Commit object as identified by the hash
-	 */
 	public function commitByHash(string $hash): Commit {
 		return objects\Commit::fromHash($this, $hash);
 	}
@@ -159,7 +144,7 @@ class Repository {
 	 * @param bool $ignoreFailure Flag allowing to just return anyway command failure
 	 * @return string the output of the git command
 	 */
-	public function execGit(string $cmd, bool $ignoreFailure = false) {
+	public function execGit(string $cmd, bool $ignoreFailure = false): string {
 		return $this->gitservice->execGit($cmd, $this->path, $ignoreFailure);
 	}
 
@@ -169,8 +154,9 @@ class Repository {
 	 * @param string $subpath The subpath below the repository root
 	 * @return GitFile|null either a Blob object or a Tree object or null on failure
 	 */
-	public function getPathAtRef($refspec = 'master', $subpath = ''): ?GitFile {
+	public function getPathAtRef(string $refspec = 'master', string $subpath = ''): ?GitFile {
 		$type = $this->execGit("cat-file -t {$refspec}:{$subpath}", true);
+
 		if (mb_strpos($type, 'fatal') === 0) {
 			return null;
 		}

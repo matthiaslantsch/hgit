@@ -11,18 +11,13 @@ namespace holonet\hgit\helpers\phphgit\objects;
 
 use RuntimeException;
 
-/**
- * The Tree class represents a git file tree at a certain commit.
- */
 class Tree extends GitFile {
 	/**
 	 * @var GitFile[] $content array of git objects contained inside the file (tree listing)
 	 */
-	protected $content;
+	protected ?array $content = null;
 
 	/**
-	 * getter method loading in the tree content and returning it
-	 * uses local property as cache.
 	 * @return GitFile[] recursive tree with git objects and git trees
 	 */
 	public function getContent(): array {
@@ -48,7 +43,7 @@ class Tree extends GitFile {
 							$this->repository,
 							$mtchs[2][$i], //object hash
 							"{$this->name}{$mtchs[4][$i]}", //filename
-							$mtchs[3][$i] //file size
+							(int)$mtchs[3][$i] //file size
 						);
 					} else {
 						throw new RuntimeException("Unknown git-ls-tree object type {$mtchs[1][$i]}");
@@ -60,9 +55,6 @@ class Tree extends GitFile {
 		return $this->content;
 	}
 
-	/**
-	 * @return string "tree" to identify this as a tree object
-	 */
 	public function type(): string {
 		return 'tree';
 	}

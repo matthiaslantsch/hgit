@@ -16,7 +16,7 @@ use holonet\hgit\models\UserModel;
 use holonet\holofw\auth\Authoriser;
 use holonet\hgit\models\ProjectModel;
 use holonet\hgit\models\GroupAccessModel;
-use holonet\http\error\NotAllowedException;
+use holonet\holofw\error\NotAllowedException;
 
 /**
  * HgitAuthoriser class used to authorise a user using local permission masks.
@@ -24,20 +24,14 @@ use holonet\http\error\NotAllowedException;
 class HgitAuthoriser implements Authoriser {
 	public const HGIT_USER_PERMISSION = 'hgit_use';
 
-	/**
-	 * @var AuthFlow $flow Reference to the authentication flow that uses this class
-	 */
-	public $flow;
+	public AuthFlow $flow;
 
-	/**
-	 * @param AuthFlow $flow Reference to the authentication flow using this authenticator
-	 */
 	public function __construct(AuthFlow $flow) {
 		$this->flow = $flow;
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * {@inheritDoc}
 	 * i.e. load permission masks for projects and determine which projects this user is allowed to access.
 	 */
 	public function authorise(User $user): void {
@@ -90,12 +84,8 @@ class HgitAuthoriser implements Authoriser {
 	 *  check if the function is globally allowed (public perm mask)
 	 *  check if internally allowed (other perm mask)
 	 *  check if the user has his own permission mask.
-	 * @param ProjectModel $project The project to be checked if the user has access or not
-	 * @param string $function The function the user should have access to to get a return of true
-	 * @param User $user Optional parameter for submitting a hgit session user object
-	 * @return bool true or false on allowed or not
 	 */
-	public static function checkAuthorisation(ProjectModel $project, string $function = 'see', User $user = null): bool {
+	public static function checkAuthorisation(ProjectModel $project, string $function = 'see', ?User $user = null): bool {
 		//check if the public permission int of this project already allows this
 		if ($project->anyMask->doesAllow($function)) {
 			return true;

@@ -3,9 +3,9 @@
     <h4 class="card-title">
       <?=$commit->hash?>
     </h4>
-    <p><a href="<?=$_urlhelper->linkTo("user/{$commit->author}")?>"><?=$commit->author?></a> (<?=$commit->ago?>)</p>
+    <p><?=$commit->author?>(<?=$commit->ago?>)</p>
     <p><?=$commit->msg?></p>
-    <a href="<?=$_urlhelper->linkTo(sprintf("%s/repo/%s/tree/%s", $project->slugname(), $repoName, $commit->hash))?>">Browse Files</a>
+    <a href="<?=linkWebgit('tree', $project, $commit->hash)?>">Browse Files</a>
   </div>
   <div class="card-block">
     <ul class="list-unstyled">
@@ -18,14 +18,14 @@
               Changed file
             <?php endif; ?>
             <a class="filter_crit"
-              href="<?=$_urlhelper->linkTo(sprintf("%s/repo/%s/blob/%s/%s", $project->slugname(), $repoName, $commit->hash, $change->newBlob->name))?>">
+              href="<?=linkWebgit('blob', $project, $commit->hash, $change->newBlob->name)?>">
               <?=basename($change->newBlob->name)?>
             </a>
             <?=highlightCode($change->getDiff(), "diff")?>
           <?php else: ?>
             Removed file
             <a class="filter_crit"
-               href="<?=$_urlhelper->linkTo(sprintf("%s/repo/%s/blob/%s/%s", $project->slugname(), $repoName, $commit->parenthash, $change->oldBlob->name))?>">
+               href="<?=linkWebgit('blob', $project, $commit->parenthash, $change->oldBlob->name)?>">
               <?=basename($change->oldBlob->name)?>
             </a>
           <?php endif; ?>

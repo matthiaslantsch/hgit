@@ -9,23 +9,25 @@
 
 namespace holonet\hgit\controllers;
 
+use Symfony\Component\Routing\Annotation\Route;
+
 /**
  * IndexController class for the index controller
  * handles common stuff like login and logout.
  */
 class IndexController extends HgitControllerBase {
 	/**
-	 * ANY /login.
+	 * @Route("/login", name="login")
 	 */
 	public function login(): void {
 		if ($this->authoriseUser() === false) {
 			return;
 		}
-		$this->redirectInternal();
+		$this->redirectInternal('homepage');
 	}
 
 	/**
-	 * ANY /logout.
+	 * @Route("/logout", name="logout")
 	 */
 	public function logout(): void {
 		if ($this->session !== null) {
@@ -34,6 +36,6 @@ class IndexController extends HgitControllerBase {
 			$this->session->invalidate();
 			$this->session->save();
 		}
-		$this->redirectInternal();
+		$this->redirectInternal('homepage');
 	}
 }

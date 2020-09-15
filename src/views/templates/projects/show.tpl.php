@@ -1,6 +1,8 @@
 <h3><?=$project->name?></h3>
-<?php if(isAllowedAction($project, "readCode", $session_user ?? null)): ?>
-  <a class="nav-link" href="<?=$_urlhelper->linkTo("{$project->slugname()}/repo")?>"><i class="fa fa-code-fork"></i> Git Repository</a>
+<?php if(isAllowedAction($project, "readCode", $_sessionuser ?? null)): ?>
+  <a class="nav-link" href="<?=linkWebgit('show', $project)?>">
+    <i class="fa fa-code-fork"></i> Git Repository
+  </a>
 <?php endif; ?>
 <hr>
 <div class="row">
@@ -18,9 +20,9 @@
       </div>
       <div class="card-block">
         <!--
-          <?php if(isAllowedAction($project, "admin", $session_user ?? null)): ?>
-            <a href="<?=$_urlhelper->linkTo("{$project->slugname()}/edit")?>" class="btn btn-block btn-secondary">Edit project Specification</a>
-            <a href="<?=$_urlhelper->linkTo("{$project->slugname()}/access")?>" class="btn btn-block btn-secondary">Edit project Permissions</a>
+          <?php if(isAllowedAction($project, "admin", $_sessionuser ?? null)): ?>
+            <a href="<=linkTo("{$project->slugname()}/edit")?>" class="btn btn-block btn-secondary">Edit project Specification</a>
+            <a href="<=linkTo("{$project->slugname()}/access")?>" class="btn btn-block btn-secondary">Edit project Permissions</a>
           <?php endif; ?>
         -->
       </div>

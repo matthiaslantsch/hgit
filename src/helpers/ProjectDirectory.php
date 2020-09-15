@@ -20,17 +20,10 @@ class ProjectDirectory {
 	/**
 	 * @var string $basepath String with the base path of the project directory
 	 */
-	public $basepath;
+	public string $basepath;
 
-	/**
-	 * @var Projectmodel $project ProjectModel instance of the project this directory belongs to
-	 */
-	public $project;
+	public ProjectModel $project;
 
-	/**
-	 * @param string $basepath String with the base path of the project directory
-	 * @param ProjectModel $project Project model instance that the directory will belong to
-	 */
 	public function __construct(string $basepath, ProjectModel $project) {
 		if (!file_exists($basepath)) {
 			throw new RuntimeException("Project directory '{$basepath}' does not exist");
@@ -40,18 +33,10 @@ class ProjectDirectory {
 		$this->project = $project;
 	}
 
-	/**
-	 * @return string base path for this project directory
-	 */
 	public function __toString(): string {
 		return $this->basepath;
 	}
 
-	/**
-	 * Get a path below the the project path.
-	 * @param string ...$subpath Sub paths as parts of the final path
-	 * @return string with an absolute path
-	 */
 	public function subpath(string ...$subpath) {
 		return FilesystemUtils::filepath($this->basepath, ...$subpath);
 	}

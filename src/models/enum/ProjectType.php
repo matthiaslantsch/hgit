@@ -4,11 +4,12 @@
  * (c) Matthias Lantsch.
  *
  * @license http://opensource.org/licenses/gpl-license.php  GNU Public License
+ * @author  Matthias Lantsch <matthias.lantsch@bluewin.ch>
  */
 
 namespace holonet\hgit\models\enum;
 
-use MyCLabs\Enum\Enum;
+use holonet\common\Enum;
 
 /**
  * @method static ProjectType PHP_LIBRARY()

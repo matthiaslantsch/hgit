@@ -11,42 +11,17 @@ namespace holonet\hgit\helpers\phphgit;
 
 use holonet\hgit\helpers\phphgit\objects\Blob;
 
-/**
- * The Change class logically represents a git change of a file.
- */
 class Change {
-	/**
-	 * @var string the changed filename
-	 */
-	public $filename;
+	public string $filename;
 
-	/**
-	 * @var Blob|null $newBlob the new blob object hash
-	 */
-	public $newBlob;
+	public ?Blob $newBlob;
 
-	/**
-	 * @var Blob|null $oldBlob the old blob object hash
-	 */
-	public $oldBlob;
+	public ?Blob $oldBlob;
 
-	/**
-	 * @var Repository $repository Reference to the repository object this git object belongs to
-	 */
-	public $repository;
+	public Repository $repository;
 
-	/**
-	 * @var string the change type character
-	 */
-	public $type;
+	public string $type;
 
-	/**
-	 * @param Repository $repository Reference to the git repository this change happened in
-	 * @param string $oldBlob The old blob object hash
-	 * @param string $newBlob The new blob object hash
-	 * @param string $type Type of change indicating character
-	 * @param string $filename The filename changed
-	 */
 	public function __construct(Repository $repository, string $oldBlob, string $newBlob, string $type, string $filename) {
 		$this->type = $type;
 
@@ -67,9 +42,6 @@ class Change {
 		$this->repository = $repository;
 	}
 
-	/**
-	 * @return string git diff output
-	 */
 	public function getDiff(): string {
 		if ($this->newBlob === null) {
 			return '';

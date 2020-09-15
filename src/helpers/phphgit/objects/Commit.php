@@ -13,9 +13,6 @@ use RuntimeException;
 use holonet\hgit\helpers\phphgit\Change;
 use holonet\hgit\helpers\phphgit\Repository;
 
-/**
- * The Commit class logically represents a git commit object.
- */
 class Commit extends GitObject {
 	/**
 	 * property for a commit pretty print format string
@@ -29,42 +26,20 @@ class Commit extends GitObject {
 	 */
 	public const COMMIT_FORMAT = '%H:/$/:%an:/$/:%ar:/$/:%s:/$/:%ct:/$/:%P';
 
-	/**
-	 * @var string $ago The commit ago time indicating the age of the commit
-	 */
-	public $ago;
+	public string $ago;
 
 	/**
-	 * @var string $author The commit author (gitconfig.user during the creation of the commit)
+	 * The commit author (gitconfig.user during the creation of the commit).
 	 */
-	public $author;
+	public string $author;
 
-	/**
-	 * @var string $msg The commit message
-	 */
-	public $msg;
+	public string $msg;
 
-	/**
-	 * property for the parent hash (null for initial commit).
-	 * @var string|null $parenthash The hash of the parent commit
-	 */
-	public $parenthash;
+	public ?string $parenthash;
 
-	/**
-	 * @var string $timestamp The commit timestamp indicating the time of the commit
-	 */
-	public $timestamp;
+	public string $timestamp;
 
-	/**
-	 * @param Repository $repo Reference to the opened git repository
-	 * @param string $hash The hash of the commit
-	 * @param string $author The author of the commit
-	 * @param string $ago The ago string of the commit
-	 * @param string $msg The msg of the commit
-	 * @param string $ts The timestamp of the commit
-	 * @param string|null $parent The parent commit hash
-	 */
-	public function __construct(Repository $repo, string $hash, string $author, string $ago, string $msg, string $ts, string $parent = null) {
+	public function __construct(Repository $repo, string $hash, string $author, string $ago, string $msg, string $ts, ?string $parent = null) {
 		parent::__construct($repo, $hash);
 		$this->author = $author;
 		$this->ago = $ago;
@@ -99,12 +74,6 @@ class Commit extends GitObject {
 		return $ret;
 	}
 
-	/**
-	 * method for creating a commit object using a commit hash.
-	 * @param Repository $repo Reference to the opened git repository
-	 * @param string $hash The hash to find the commit with
-	 * @return self a newly created Commit object (of this class)
-	 */
 	public static function fromHash(Repository $repo, string $hash): self {
 		$cmd = sprintf('log -1 -U %s --abbrev-commit --pretty=format:%s',
 			$hash, self::COMMIT_FORMAT
@@ -130,9 +99,6 @@ class Commit extends GitObject {
 		);
 	}
 
-	/**
-	 * @return string git diff output
-	 */
 	public function getDiff(): string {
 		if ($this->parenthash === null) {
 			return $this->execGit("diff 4b825dc642cb6eb9a060e54bf8d69288fbee4904 {$this->hash}");
@@ -141,11 +107,6 @@ class Commit extends GitObject {
 		return $this->execGit("diff {$this->hash}~ {$this->hash}");
 	}
 
-	/**
-	 * method used to get a git show output for this specific commit (either a file or a directory listing).
-	 * @param string $subpath The subpath below the repository root
-	 * @return GitFile either a Blob object or a Tree object (blob object anyway)
-	 */
 	public function getPath(string $subpath = ''): GitFile {
 		$type = $this->execGit("cat-file -t {$this->hash}:{$subpath}");
 		$hash = $this->execGit("rev-parse {$this->hash}:{$subpath}");
@@ -159,9 +120,6 @@ class Commit extends GitObject {
 		throw new RuntimeException("Unknown git object type '{$type}'' at {$this->hash}:{$subpath}");
 	}
 
-	/**
-	 * @return string "commit" to identify this as a commit object
-	 */
 	public function type(): string {
 		return 'commit';
 	}

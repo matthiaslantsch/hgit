@@ -9,12 +9,29 @@
 
 namespace holonet\hgit\models;
 
+use holonet\activerecord\ModelBase;
+use holonet\hgit\helpers\AccessMask;
+use holonet\activerecord\annotation\Table;
+use holonet\activerecord\annotation\validate\Required;
+use holonet\activerecord\annotation\relation\BelongsTo;
+
 /**
  * UserAccessModel class to wrap around the "userAccess" database table.
+ * @Table("userAccess")
  */
-class UserAccessModel extends AccessMaskModel {
+class UserAccessModel extends ModelBase {
 	/**
-	 * @var array $belongsTo Array with definitions for a belongsTo relationship
+	 * @Required
 	 */
-	public static $belongsTo = array('user', 'project');
+	protected AccessMask $mask;
+
+	/**
+	 * @BelongsTo("project")
+	 */
+	protected ProjectModel $project;
+
+	/**
+	 * @BelongsTo("user")
+	 */
+	protected UserModel $user;
 }

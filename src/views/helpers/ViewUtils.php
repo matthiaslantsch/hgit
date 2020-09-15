@@ -24,7 +24,7 @@ class ViewUtils extends \holonet\holofw\viewhelpers\ViewUtils {
 	 * @throws Exception
 	 * @return string html markup with highlighted code inside <pre><code> tags
 	 */
-	public static function highlightCode(string $code, string $lang = null) {
+	public static function highlightCode(string $code, ?string $lang = null): string {
 		$hl = new Highlighter();
 		if ($lang !== null) {
 			$r = $hl->highlight($lang, $code);
@@ -36,14 +36,31 @@ class ViewUtils extends \holonet\holofw\viewhelpers\ViewUtils {
 	}
 
 	/**
-	 * {@see HgitAuthoriser::checkAuthorisation()}.
+	 * @see HgitAuthoriser::checkAuthorisation().
 	 * @param ProjectModel $project The project that needs access to a function checked
 	 * @param string $function Function string decribing the function the user wants to access in that project
 	 * @param User $user Optional parameter for submitting a hgit session user object
 	 * @return bool true or false if the user is allowed to access that function or not
 	 */
-	public static function isAllowedAction(ProjectModel $project, string $function = 'see', User $user = null): bool {
+	public static function isAllowedAction(ProjectModel $project, string $function = 'see', ?User $user = null): bool {
 		return HgitAuthoriser::checkAuthorisation($project, $function, $user);
+	}
+
+	/**
+	 * @TODO use named parameters when calling this in php >8
+	 */
+	public static function linkWebgit(string $method, ProjectModel $project, ?string $refspec = null, ?string $path = null, ?string $repoName = null): string {
+		$params = array(
+			'projectName' => $project->slugname(),
+			'repoName' => $repoName ?? "{$project->slugname()}.git",
+			'refspec' => $refspec
+		);
+
+		if (!empty($path)) {
+			$params['path'] = $path;
+		}
+
+		return static::linkTo("webgit_{$method}", $params);
 	}
 
 	/**
@@ -62,7 +79,7 @@ class ViewUtils extends \holonet\holofw\viewhelpers\ViewUtils {
 	 * @param string $x The given url to encode
 	 * @return string the urlencoded string
 	 */
-	public static function urlencodeall($x): string {
+	public static function urlencodeall(string $x): string {
 		$out = '';
 		for ($i = 0; isset($x[$i]); $i++) {
 			$c = $x[$i];

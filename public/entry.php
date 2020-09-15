@@ -11,7 +11,7 @@
 require_once dirname(__DIR__)."/vendor/autoload.php";
 
 $app = new holonet\hgit\Application();
-$request = \holonet\http\Request::createFromGlobals();
+$request = \holonet\holofw\Request::createFromGlobals();
 $resp = $app->handleRequest($request);
 $resp->send();
 

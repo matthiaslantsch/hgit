@@ -67,7 +67,7 @@ class AccessMask extends BitwiseFlag {
 	/**
 	 * @param string $function Function string describing the function that the permission mask should be set to allow
 	 */
-	public function allow($function): void {
+	public function allow(string $function): void {
 		switch ($function) {
 			case 'readCode':
 				$this->setFlag(self::READCODE, true);
@@ -104,7 +104,7 @@ class AccessMask extends BitwiseFlag {
 	 * @param string $function Function string describing the function the user wants to access in that project
 	 * @return bool true or false if the mask allows the given function or not
 	 */
-	public function doesAllow($function = 'see'): bool {
+	public function doesAllow(string $function = 'see'): bool {
 		switch ($function) {
 			case 'see':
 				//just check if any permission bit is set

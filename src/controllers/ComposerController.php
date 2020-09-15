@@ -9,14 +9,16 @@
 
 namespace holonet\hgit\controllers;
 
-use holonet\hgit\helpers\GitService;
 use holonet\hgit\models\ProjectModel;
+use holonet\hgit\services\GitService;
 use holonet\hgit\models\enum\ProjectType;
-use holonet\hgit\helpers\ProjectDirectoryService;
+use Symfony\Component\Routing\Annotation\Route;
+use holonet\hgit\services\ProjectDirectoryService;
 
 /**
  * ComposerController exposing that is supposed to communicate with
  * a composer client and advertise the php library projects.
+ * @Route("/composer")
  */
 class ComposerController extends HgitControllerBase {
 	/**
@@ -24,18 +26,12 @@ class ComposerController extends HgitControllerBase {
 	 */
 	public const DEV_VERSION_BRANCH_NAMES = array('master', 'develop');
 
-	/**
-	 * @var ProjectDirectoryService $di_directoryService Dependency injected project directory filesystem service
-	 */
-	public $di_directoryService;
+	public ProjectDirectoryService $di_directoryService;
+
+	public GitService $di_gitservice;
 
 	/**
-	 * @var GitService $di_gitservice Dependency injected git command service
-	 */
-	public $di_gitservice;
-
-	/**
-	 * GET /composer/packages.json
+	 * @Route("/packages.json", methods={"GET"})
 	 * return a json list with information about this composer backend.
 	 */
 	public function info(): void {
@@ -51,7 +47,7 @@ class ComposerController extends HgitControllerBase {
 			);
 			$versions = array();
 			foreach ($versionRefs as $ref) {
-				$atRefComposeJson = $repo->getPathAtRef('develop', 'composer.json');
+				$atRefComposeJson = $repo->getPathAtRef($ref, 'composer.json');
 				if ($atRefComposeJson !== null) {
 					$atRefComposeJson = json_decode($atRefComposeJson->getContent(), true);
 					$atRefComposeJson['source'] = array(
@@ -83,11 +79,9 @@ class ComposerController extends HgitControllerBase {
 	}
 
 	/**
-	 * POST /composer/notify/[projectName:?s]
-	 * backend for collecting installation data from the composer clients.
-	 * @param string $packageName Optional parameter with the package name that was installed
+	 * @Route("/notify/{projectName}", methods={"POST"})
 	 */
-	public function notify($packageName): void {
+	public function notify(string $projectName): void {
 		/** @psalm-suppress PossiblyInvalidArgument */
 		$info = json_decode($this->request->getContent(), true);
 		foreach ($info['downloads'] as $notify) {
@@ -96,9 +90,7 @@ class ComposerController extends HgitControllerBase {
 			if ($project !== null) {
 				$this->di_directoryService->notifyDownload($project, $notify['version']);
 			} else {
-				$this->notFound("Could not find installed package '{$notify['name']}'");
-
-				return;
+				throw $this->notFound("Could not find installed package '{$notify['name']}'");
 			}
 		}
 	}
@@ -108,7 +100,7 @@ class ComposerController extends HgitControllerBase {
 	 * a search interface for the composer client.
 	 */
 	public function search(): void {
-		$this->notFound('Not yet implemented');
+		throw $this->notFound('Not yet implemented');
 
 		//@TODO implement the composer type parameter
 //		$query = strip_tags($this->request->query->get("query"));

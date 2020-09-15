@@ -10,9 +10,9 @@
 namespace holonet\hgit;
 
 use holonet\holofw\FWApplication;
-use holonet\hgit\helpers\GitService;
+use holonet\hgit\services\GitService;
 use holonet\holofw\auth\flow\PromptAuthFlow;
-use holonet\hgit\helpers\ProjectDirectoryService;
+use holonet\hgit\services\ProjectDirectoryService;
 
 class Application extends FWApplication {
 	public const APP_NAME = 'hgit';
@@ -22,7 +22,7 @@ class Application extends FWApplication {
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * {@inheritDoc}
 	 */
 	public function bootstrap(): void {
 		parent::bootstrap();

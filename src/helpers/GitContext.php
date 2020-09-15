@@ -15,25 +15,13 @@ use holonet\hgit\helpers\phphgit\Repository;
  * Class GitContext represents a "place" in a git repository (path, refspec current branch usw...).
  */
 class GitContext {
-	/**
-	 * @var string $branch Current branch for this context
-	 */
-	public $branch;
+	public ?string $branch = null;
 
-	/**
-	 * @var Repository $gitrepo Reference to the repository object this context is in
-	 */
-	public $gitrepo;
+	public Repository $gitrepo;
 
-	/**
-	 * @var string $path Path inside the repository at the given refspec
-	 */
-	public $path;
+	public string $path;
 
-	/**
-	 * @var string $refspec Denotes a reference in the git repo (branch, commit, tagname usw...)
-	 */
-	public $refspec;
+	public string $refspec;
 
 	public function __construct(Repository $gitrepo, string $refspec, string $path) {
 		$this->gitrepo = $gitrepo;

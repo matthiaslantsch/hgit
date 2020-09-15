@@ -12,23 +12,21 @@ namespace holonet\hgit\controllers;
 use RuntimeException;
 use holonet\holofw\session\User;
 use holonet\hgit\models\UserModel;
+use holonet\holofw\annotation\REST;
 use holonet\hgit\helpers\AccessMask;
 use holonet\hgit\models\ProjectModel;
 use holonet\hgit\models\enum\ProjectType;
-use holonet\hgit\helpers\ProjectDirectoryService;
+use holonet\hgit\views\helpers\ViewUtils;
+use Symfony\Component\Routing\Annotation\Route;
+use holonet\hgit\services\ProjectDirectoryService;
 
 /**
  * ProjectsController exposing a crud interface for the project resource.
+ * @REST("project")
  */
 class ProjectsController extends HgitControllerBase {
-	/**
-	 * @var ProjectDirectoryService $di_directoryService Project directory filesystem service
-	 */
-	public $di_directoryService;
+	public ProjectDirectoryService $di_directoryService;
 
-	/**
-	 * POST projects.
-	 */
 	public function create(): void {
 		if (!$this->authoriseUser()) {
 			return;
@@ -38,16 +36,13 @@ class ProjectsController extends HgitControllerBase {
 		$sessionuser = $this->session()->get('user');
 
 		$data = array(
-			'major' => 0, 'minor' => 0, 'fix' => 0,
 			'name' => strip_tags($this->request->request->get('name')),
 			'description' => strip_tags($this->request->request->get('description')),
 			'permissionPreset' => $this->request->request->get('permPreset'),
-			'type' => new ProjectType($this->request->request->get('projectType'))
+			'type' => ProjectType::fromValue($this->request->request->get('projectType'))
 		);
 
-		if ($sessionuser->internalid !== null) {
-			$data['user'] = $this->di_repo->find(UserModel::class, $sessionuser->internalid);
-		}
+		$data['user'] = $this->di_repo->find(UserModel::class, $sessionuser->internalid);
 
 		/** @var ProjectModel $project */
 		$project = $this->di_repo->new(ProjectModel::class, $data);
@@ -65,7 +60,7 @@ class ProjectsController extends HgitControllerBase {
 			$sessionuser->permissions['projects'][$project->id] = new AccessMask(255);
 
 			$this->view->set('errors', false);
-			$this->view->set('redirect', $this->linkInternal($project->slugname()));
+			$this->view->set('redirect', ViewUtils::linkTo('projects_show', array('projectName' => $project->slugname())));
 			$this->di_database->commit();
 		} else {
 			$this->view->set('errors', $errors->getAll());
@@ -75,8 +70,7 @@ class ProjectsController extends HgitControllerBase {
 	}
 
 	/**
-	 * GET /projects
-	 * ANY /.
+	 * @Route("/", methods={"GET"}, name="homepage")
 	 */
 	public function index(): void {
 		$this->view->set('title', 'Project Overview');
@@ -90,9 +84,6 @@ class ProjectsController extends HgitControllerBase {
 		$this->view->set('projects', $projects);
 	}
 
-	/**
-	 * GET projects/new.
-	 */
 	public function new(): void {
 		if (!$this->authoriseUser()) {
 			return;
@@ -102,17 +93,13 @@ class ProjectsController extends HgitControllerBase {
 	}
 
 	/**
-	 * GET /[projectName:a]
-	 * show an overview of a project.
-	 * @param string $projectName Alphanumeric string containing the project name
+	 * @Route("/{projectName}", methods={"get"})
 	 */
 	public function show(string $projectName): void {
 		/** @var ProjectModel|null $project */
 		$project = $this->di_repo->get(ProjectModel::class, array('name' => $projectName));
 		if ($project === null) {
-			$this->notFound("project with the name '{$projectName}'");
-
-			return;
+			throw $this->notFound("project with the name '{$projectName}'");
 		}
 
 		$projectDir = $this->di_directoryService->projectDirectory($project);

@@ -13,32 +13,22 @@ use holonet\hgit\helpers\GitContext;
 use holonet\hgit\models\ProjectModel;
 use holonet\hgit\helpers\phphgit\Repository;
 use Symfony\Component\HttpFoundation\Response;
-use holonet\hgit\helpers\ProjectDirectoryService;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\HeaderUtils;
+use holonet\hgit\services\ProjectDirectoryService;
 
 /**
  * WebgitController exposing a web git interface.
+ * @Route("/{projectName}/repo/{repoName?}")
  */
 class WebgitController extends HgitControllerBase {
-	/**
-	 * @var ProjectDirectoryService $di_directoryService Dependency injected project directory filesystem service
-	 */
-	public $di_directoryService;
+	public ProjectDirectoryService $di_directoryService;
 
-	/**
-	 * @var GitContext $context Current git "context" (refspec path usw...)
-	 */
-	private $context;
+	private GitContext $context;
 
-	/**
-	 * @var Repository $gitrepo Reference to the repository object this context is in
-	 */
-	private $gitrepo;
+	private Repository $gitrepo;
 
-	/**
-	 * @var ProjectModel $project The currently handled project instance
-	 */
-	private $project;
+	private ProjectModel $project;
 
 	/**
 	 * facade method sorting the parameter data and initialising the git context.
@@ -49,9 +39,7 @@ class WebgitController extends HgitControllerBase {
 			/** @var ProjectModel $project */
 			$project = $this->di_repo->get(ProjectModel::class, array('name' => $this->request->attributes->get('projectName')));
 			if ($project === null) {
-				$this->notFound("project with the name '{$this->request->attributes->get('projectName')}'");
-
-				return;
+				throw $this->notFound("project with the name '{$this->request->attributes->get('projectName')}'");
 			}
 
 			if (!$this->accessControl($project, 'readCode')) {
@@ -60,7 +48,7 @@ class WebgitController extends HgitControllerBase {
 
 			$this->project = $project;
 
-			$this->view->set('cloneUrl', "{$this->request->getSchemeAndHttpHost()}{$this::linkInternal("{$project->slugname()}/repo/"."{$project->slugname()}.git")}");
+			$this->view->set('cloneUrl', "{$this->request->getSchemeAndHttpHost()}{$this::linkInternal('webgit_repo', array('projectName' => $project->slugname(), 'repoName' => "{$project->slugname()}.git"))}");
 
 			$this->gitrepo = $this->di_directoryService->gitRepo(
 				$this->di_directoryService->projectDirectory($project),
@@ -72,7 +60,7 @@ class WebgitController extends HgitControllerBase {
 			$this->context = new GitContext(
 				$this->gitrepo,
 				//default to "master" as refspec
-				urldecode($this->request->attributes->get('refspec', 'master')),
+				urldecode($this->request->attributes->get('refspec') ?? 'master'),
 				//default to an empty path
 				urldecode($this->request->attributes->get('path', ''))
 			);
@@ -80,19 +68,14 @@ class WebgitController extends HgitControllerBase {
 	}
 
 	/**
-	 * blob method displaying a blob for a certain refspec
-	 * GET /[projectName:a]/git/blob/[refspec:]/[path:**].
-	 * @param string $projectName The name of the project that is being accessed
+	 * @Route("/blob/{refspec?}/{path<.+>?}")
 	 */
 	public function blob(string $projectName): void {
 		$this->buildwebgitNavi();
 		$blob = $this->gitrepo->getPathAtRef($this->context->refspec, $this->context->path);
-		if ($blob === null || $blob->type() !== 'blob') {
-			$this->notFound(
-				"Could not find blob at pathref '{$this->context->refspec}:{$this->context->path}' in git repo for project '{$projectName}'"
-			);
 
-			return;
+		if ($blob === null || $blob->type() !== 'blob') {
+			throw $this->notFound("blob at pathref '{$this->context->refspec}:{$this->context->path}' in git repo for project '{$projectName}'");
 		}
 
 		$this->view->set('title', "{$projectName} Webgit - {$this->context->refspec}");
@@ -101,51 +84,37 @@ class WebgitController extends HgitControllerBase {
 	}
 
 	/**
-	 * commit method showing the details about a commit
-	 * GET /[projectName:a]/git/commit/[hash:h].
-	 * @param string $projectName The name of the project that is being accessed
-	 * @param string $repoName Name of the repository under the project we are accessing
-	 * @param string $hash The hash of the commit to be shown in detail
+	 * @Route("/commit/{refspec}")
 	 */
 	public function commit(string $projectName, string $repoName, string $hash): void {
 		$this->buildwebgitNavi();
 		$this->view->set('commit', $this->gitrepo->commitByHash($hash));
-		$this->view->set('page', 'log');
+		$this->view->set('page', 'commitlog');
 		$this->view->set('title', "{$projectName} webgit - {$hash}");
 	}
 
 	/**
-	 * commitlog method listing the git log
-	 * GET /git/log/[branch:].
-	 * @param string $projectName The name of the project that is being accessed
+	 * @Route("/log/{refspec}")
 	 */
 	public function commitlog(string $projectName): void {
 		$this->buildwebgitNavi();
 
 		if (!isset($this->gitrepo->branches[$this->context->refspec])) {
-			$this->notFound("Could not find branch '{$this->context->refspec}' in git repo for project '{$this->project->name}'");
-
-			return;
+			throw $this->notFound("Could not find branch '{$this->context->refspec}' in git repo for project '{$this->project->name}'");
 		}
 
-		$this->view->set('page', 'log');
+		$this->view->set('page', 'commitlog');
 		$this->view->set('title', "{$this->project->name} webgit - {$this->context->refspec} commit log");
 		$this->view->set('gitlog', $this->gitrepo->branches[$this->context->refspec]->getHistory());
 	}
 
 	/**
-	 * raw method sending back a raw file from the git index
-	 * GET /[projectName:a]/git/raw/[refspec:]/[path:**].
-	 * @param string $projectName The name of the project that is being accessed
+	 * @Route("/raw/{refspec}/{path<.+>}")
 	 */
 	public function raw(string $projectName): void {
 		$blob = $this->gitrepo->getPathAtRef($this->context->refspec, $this->context->path);
 		if ($blob === null || $blob->type() !== 'blob') {
-			$this->notFound(
-				"Could not find blob at pathref '{$this->context->refspec}:{$this->context->path}' in git repo for project '{$projectName}'"
-			);
-
-			return;
+			throw $this->notFound("blob at pathref '{$this->context->refspec}:{$this->context->path}' in git repo for project '{$projectName}'");
 		}
 
 		$this->response = new Response($blob->getContent());
@@ -154,9 +123,7 @@ class WebgitController extends HgitControllerBase {
 	}
 
 	/**
-	 * tags method listing all tags in the repository
-	 * GET /[projectName:a]/git/tags.
-	 * @param string $projectName The name of the project that is being accessed
+	 * @Route("/tags/{refspec?}")
 	 */
 	public function tags(string $projectName): void {
 		$this->buildwebgitNavi();
@@ -166,9 +133,8 @@ class WebgitController extends HgitControllerBase {
 	}
 
 	/**
-	 * method for the webgit tree action
-	 * GET /[projectName:a]/git/tree/[refspec:]/[path:**].
-	 * @param string $projectName The name of the project that is being accessed
+	 * @Route("/", name="webgit_show")
+	 * @Route("/tree/{refspec?}/{path<.+>?}")
 	 */
 	public function tree(string $projectName): void {
 		$this->buildwebgitNavi();
@@ -177,11 +143,7 @@ class WebgitController extends HgitControllerBase {
 		}
 		$tree = $this->gitrepo->getPathAtRef($this->context->refspec, $this->context->path);
 		if ($tree === null || $tree->type() !== 'tree') {
-			$this->notFound(
-				"Could not find tree at pathref {$this->context->refspec}:{$this->context->path} in git repo for project {$this->project->name}"
-			);
-
-			return;
+			throw $this->notFound("Could not find tree at pathref {$this->context->refspec}:{$this->context->path} in git repo for project {$this->project->name}");
 		}
 
 		$this->view->set('title', "{$this->project->name} webgit - {$this->context->refspec}");

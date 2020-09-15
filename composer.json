@@ -1,43 +1,45 @@
 {
 	"name": "holonet/hgit",
-	"description": "Project management application wrapping around git",
 	"type": "project",
+	"description": "Project management application wrapping around git",
 	"authors": [
 		{
 			"name": "matthias.lantsch",
 			"email": "matthias.lantsch@bluewin.ch"
 		}
 	],
+	"require": {
+		"php": ">=7.4",
+		"erusev/parsedown": "^1.7",
+		"holonet/holofw": "~3.3.0",
+		"holonet/sphinxauth": "~1.1.0",
+		"scrivo/highlight.php": "v9.18.1.1"
+	},
+	"require-dev": {
+		"filp/whoops": "^2.5",
+		"holonet/hdev": "~1.0.0",
+		"symfony/var-dumper": "^5.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"holonet\\hgit\\": "src/"
+		}
+	},
 	"repositories": [
 		{
 			"type": "composer",
 			"url": "https://holonet.easylabs.ch/hgit/composer/"
 		}
 	],
-	"autoload": {
-		"psr-4" : {
-			"holonet\\hgit\\" : "src/"
-		}
-	},
-	"require": {
-		"holonet/holofw": "^3.2.0",
-		"holonet/sphinxauth": "^1.0.0",
-		"myclabs/php-enum": "^1.7",
-		"erusev/parsedown": "^1.7",
-		"scrivo/highlight.php": "v9.18.1.1"
-	},
-	"require-dev": {
-		"filp/whoops": "^2.5",
-		"friendsofphp/php-cs-fixer": "^2.11",
-		"vimeo/psalm": "^3.5",
-		"symfony/var-dumper": "^5.0"
-	},
+	"minimum-stability": "dev",
 	"scripts": {
 		"fix": [
+			"@composer normalize --diff",
 			"@php -d memory_limit=-1 vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --verbose --ansi"
 		],
 		"test": [
 			"@composer validate",
+			"@composer normalize --dry-run --diff",
 			"@php -d memory_limit=-1 vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --verbose --dry-run --ansi",
 			"@php -d memory_limit=-1 vendor/vimeo/psalm/psalm"
 		]

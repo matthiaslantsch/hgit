@@ -1,8 +1,10 @@
 <input type="hidden" id="idRepo" value="<?=$project->id?>"/>
 <input type="hidden" id="branchTf" value="<?=$context->refspec?>"/>
 <h3>Git viewing
-  <a href="<?=$_urlhelper->linkTo("{$project->slugname()}")?>"><?=$project->name?></a> /
-  <a href="<?=$_urlhelper->linkTo("{$project->slugname()}/repo/{$repoName}/tree/{$context->refspec}")?>"><?=$context->refspec?></a>
+  <a href="<?=linkTo('projects_show', ['projectName' => $project->slugname()])?>"><?=$project->name?></a> /
+  <a href="<?=linkWebgit('tree', $project, $context->refspec)?>">
+    <?=$context->refspec?>
+  </a>
   <?php if(strlen($context->path) > 0): ?>
     / <?=$context->path?>
   <?php endif;?>
@@ -10,15 +12,15 @@
 <ul class="nav nav-pills nav-justified">
   <li class="nav-item">
     <a class="nav-link <?=($page == "tree" || $page == "blob" ? "active" : "")?>"
-      href="<?=$_urlhelper->linkTo("{$project->slugname()}/repo/{$repoName}/tree/{$linkToBranch}")?>">Files</a>
+      href="<?=linkWebgit('tree', $project, $linkToBranch)?>">Files</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link <?=($page == "log" ? "active" : "")?>"
-      href="<?=$_urlhelper->linkTo("{$project->slugname()}/repo/{$repoName}/log/{$linkToBranch}")?>">Commits</a>
+    <a class="nav-link <?=($page == "commitlog" ? "active" : "")?>"
+       href="<?=linkWebgit('commitlog', $project, $linkToBranch)?>">Commits</a>
   </li>
   <li class="nav-item">
     <a class="nav-link <?=($page == "tags" ? "active" : "")?>"
-      href="<?=$_urlhelper->linkTo("{$project->slugname()}/repo/{$repoName}/tags/{$linkToBranch}")?>">Tags</a>
+       href="<?=linkWebgit('tags', $project, $linkToBranch)?>">Tags</a>
   </li>
 </ul>
 <hr>

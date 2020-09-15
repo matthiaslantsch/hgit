@@ -20,27 +20,18 @@ use Symfony\Component\HttpFoundation\Response;
  * the http-backend git command.
  */
 class GitResponse extends Response {
-	/**
-	 * @var Repository $gitRepo The git repository wrapper object
-	 */
-	private $gitRepo;
+	private Repository $gitRepo;
 
 	/**
-	 * @var array $processEnvironment Array holding environment variables for the git process
+	 * Environment variables for the git process.
 	 */
-	private $processEnvironment;
+	private array $processEnvironment;
 
-	/**
-	 * Constructor method to create a GitResponse
-	 * will execute the command based on the request.
-	 * @param Repository $gitRepo The git repository wrapper object
-	 * @param string $path The subpath of the file in the repo that is being accessed
-	 */
 	public function __construct(Repository $gitRepo, string $path) {
 		parent::__construct();
 		$this->gitRepo = $gitRepo;
 		$this->processEnvironment = array(
-			'GIT_PROJECT_ROOT' => rtrim(dirname($this->gitRepo->path), DIRECTORY_SEPARATOR), //parent directory of the git repo path
+			'GIT_PROJECT_ROOT' => rtrim(dirname($this->gitRepo->path), \DIRECTORY_SEPARATOR), //parent directory of the git repo path
 			'GIT_HTTP_EXPORT_ALL' => '1',
 			'PATH_INFO' => "/{$path}"
 		);
@@ -49,9 +40,9 @@ class GitResponse extends Response {
 	/**
 	 * Prepare our response in respect to the Request
 	 * set additional process environment variables based on the request.
-	 * {@inheritdoc}
+	 * {@inheritDoc}
 	 */
-	public function prepare(Request $request): self {
+	public function prepare(Request $request) {
 		parent::prepare($request);
 		$environmentValues = array('REMOTE_ADDR', 'CONTENT_TYPE', 'QUERY_STRING', 'REQUEST_METHOD', 'HTTP_ACCEPT', 'CONTENT_LENGTH');
 		foreach ($environmentValues as $pval) {
@@ -72,7 +63,7 @@ class GitResponse extends Response {
 			throw new RuntimeException('The git script returned empty output');
 		}
 
-		$response = preg_split('/\\R\\R/', $output, 2, PREG_SPLIT_NO_EMPTY);
+		$response = preg_split('/\\R\\R/', $output, 2, \PREG_SPLIT_NO_EMPTY);
 		$headers = $response[0];
 		$this->setContent($response[1] ?? '');
 

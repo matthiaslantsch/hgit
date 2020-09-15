@@ -11,31 +11,18 @@ namespace holonet\hgit\helpers\phphgit\objects;
 
 use holonet\hgit\helpers\phphgit\Repository;
 
-/**
- * The Commit class represents a git blob object
- * a git blob is a file at a certain point.
- */
 class Blob extends GitFile {
 	/**
-	 * @var int $size The size of the blob in bytes
+	 * The size of the blob in bytes.
 	 */
-	public $size;
+	public int $size;
 
-	/**
-	 * @var string $content binary string (content)
-	 */
-	protected $content;
+	protected ?string $content = null;
 
-	/**
-	 * @param Repository $repo Reference to the opened git repository
-	 * @param string $hash The hash of the blob
-	 * @param string $filename The name of the file (blob)
-	 * @param int $size | the size of the blob
-	 */
-	public function __construct(Repository $repo, string $hash, string $filename, int $size = null) {
+	public function __construct(Repository $repo, string $hash, string $filename, ?int $size = null) {
 		parent::__construct($repo, $hash, $filename);
 
-		//if not given, get the size with a seperate command
+		//if not given, get the size with a separate command
 		if ($size === null) {
 			$size = (int)($this->execGit("cat-file -s {$this->hash}"));
 		}
@@ -43,21 +30,15 @@ class Blob extends GitFile {
 		$this->size = $size;
 	}
 
-	/**
-	 * return the content if this object is casted ton a string.
-	 * @return string the content of this blob file
-	 */
 	public function __toString(): string {
 		return $this->getContent();
 	}
 
 	/**
-	 * getter method loading in the blob content and returning it
-	 * uses local property as cache.
 	 * @return string binary blob string
 	 */
 	public function getContent(): string {
-		if ($this->content === null) {
+		if (!isset($this->content)) {
 			$this->content = $this->execGit("cat-file blob {$this->hash}");
 		}
 
@@ -74,9 +55,6 @@ class Blob extends GitFile {
 		return sprintf('%.2f', $this->size / 1024 ** $factor).@$sz[$factor];
 	}
 
-	/**
-	 * @return string "blob" to identify this as a blob object
-	 */
 	public function type(): string {
 		return 'blob';
 	}

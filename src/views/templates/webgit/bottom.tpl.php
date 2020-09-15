@@ -4,7 +4,7 @@
       <div class="sidebar-module sidebar-module-inset">
         <h4><?=ucfirst($key)?>:</h4>
        <?php foreach($brnchs as $branch): ?>
-          <p><a href="<?=$_urlhelper->linkTo(sprintf("%s/repo/%s/%s/%s/%s", $project->slugname(), $repoName, $page, urlencodeall($branch), $context->path))?>">
+          <p><a href="<?=linkWebgit($page, $project, urlencodeall($branch), $context->path)?>">
             <?=$branch?>
           </a></p>
         <?php endforeach; ?>

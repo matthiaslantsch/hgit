@@ -14,35 +14,21 @@ use holonet\hgit\helpers\GitResponse;
 use holonet\hgit\models\ProjectModel;
 use holonet\hgit\helpers\HgitAuthoriser;
 use holonet\holofw\auth\flow\PromptAuthFlow;
-use holonet\hgit\helpers\ProjectDirectoryService;
+use holonet\hgit\services\ProjectDirectoryService;
 
 /**
  * GitController is supposed to answer to requests of the git client.
  */
 class GitController extends HgitControllerBase {
-	/**
-	 * @var PromptAuthFlow $di_basicauth Basic auth authentication flow used for the backend
-	 */
-	public $di_basicauth;
+	public PromptAuthFlow $di_basicauth;
 
-	/**
-	 * @var ProjectDirectoryService $di_directoryService Dependency injected project directory filesystem service
-	 */
-	public $di_directoryService;
+	public ProjectDirectoryService $di_directoryService;
 
-	/**
-	 * method for the repo action
-	 * ANY /[projectName:a]/repo/[path:*].
-	 * @param string $projectName The name of the project that is being accessed
-	 * @param string $path The subpath of the file in the repo that is being accessed
-	 */
-	public function repo(string $projectName, string $repoName, string $path): void {
+	public function repo(string $projectName, string $repoName, ?string $path = null): void {
 		/** @var ProjectModel $project */
 		$project = $this->di_repo->get(ProjectModel::class, array('name' => $this->request->attributes->get('projectName')));
 		if ($project === null) {
-			$this->notFound("project with the name '{$this->request->attributes->get('projectName')}'");
-
-			return;
+			throw $this->notFound("project with the name '{$this->request->attributes->get('projectName')}'");
 		}
 
 		$repository = $this->di_directoryService->gitRepo(
@@ -67,8 +53,11 @@ class GitController extends HgitControllerBase {
 				return;
 			}
 		} else {
+			$this->redirectInternal('webgit_show', array('projectName' => $projectName, 'repoName' => $repoName));
+
+			return;
 			//not sure what requests are sent from clients
-			throw new RuntimeException((mb_strstr($path, '/')."Unknown type of git request '{$path}'{$this->request->__toString()}'"));
+			//throw new RuntimeException((mb_strstr($path, '/')."Unknown type of git request '{$path}'{$this->request->__toString()}'"));
 		}
 
 		$this->response = new GitResponse($repository, "{$repoName}/{$path}");
@@ -77,7 +66,7 @@ class GitController extends HgitControllerBase {
 		}
 	}
 
-	/**
+	/** WebgitController
 	 * small helper method checking the authorisation on a project
 	 * will try to authenticate the user.
 	 * @param ProjectModel $project The project that needs access to a function checked
@@ -98,7 +87,7 @@ class GitController extends HgitControllerBase {
 			$this->di_basicauth->authorise($sessionUser);
 
 			if (!HgitAuthoriser::checkAuthorisation($project, $function, $sessionUser)) {
-				$this->notAllowed("Function '{$function}' for project '{$project->name}' was denied");
+				throw $this->notAllowed("Function '{$function}' for project '{$project->name}' was denied");
 			}
 		}
 

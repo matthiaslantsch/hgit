@@ -1,6 +1,6 @@
 <h3>Project Overview</h3>
-<?php if(isset($session_user)): ?>
-  <a href="<?=$_urlhelper->linkTo("projects/new")?>">Create a new project</a>
+<?php if(isset($_sessionuser)): ?>
+  <a href="<?=linkTo("projects_new")?>">Create a new project</a>
 <?php endif; ?>
 <hr>
 <?php if(!empty($projects)): ?>
@@ -8,9 +8,11 @@
     <div class="row">
       <div class="col-md-9">
         <h4><?=$proj->name?></h4>
-        <!--<a class="nav-link" href="<?=$_urlhelper->linkTo("projects/{$proj->slugname()}")?>"><i class="fa fa-feed"></i> Activity</a>-->
-        <?php if(isAllowedAction($proj, "readCode", $session_user ?? null)): ?>
-          <a class="nav-link" href="<?=$_urlhelper->linkTo("{$proj->slugname()}/repo")?>"><i class="fa fa-code-fork"></i> Git Repository</a>
+        <!--<a class="nav-link" href="<linkTo('project_show', ['projectName' => $proj->slugname()])?>"><i class="fa fa-feed"></i> Activity</a>-->
+        <?php if(isAllowedAction($proj, "readCode", $_sessionuser ?? null)): ?>
+          <a class="nav-link" href="<?=linkWebgit('show', $proj)?>">
+            <i class="fa fa-code-fork"></i> Git Repository
+          </a>
         <?php endif; ?>
       </div>
       <div class="col-md-3">
@@ -25,7 +27,7 @@
   <?php endforeach; ?>
 <?php else: ?>
   There seems to be nothing here :(
-  <?php if(isset($session_user)): ?>
-    <a href="<?=$_urlhelper->linkTo("projects/new")?>">Create a new project</a>
+  <?php if(isset($_sessionuser)): ?>
+    <a href="<?=linkTo("projects_new")?>">Create a new project</a>
   <?php endif; ?>
 <?php endif; ?>

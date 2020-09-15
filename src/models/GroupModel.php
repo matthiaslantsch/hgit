@@ -10,25 +10,33 @@
 namespace holonet\hgit\models;
 
 use holonet\activerecord\ModelBase;
+use holonet\activerecord\sets\ModelSet;
+use holonet\activerecord\annotation\Table;
+use holonet\activerecord\annotation\validate\Length;
+use holonet\activerecord\annotation\relation\HasMany;
+use holonet\activerecord\annotation\validate\Required;
+use holonet\activerecord\annotation\relation\Many2Many;
 
 /**
  * GroupModel class to wrap around the "group" database table.
+ * @Table("group")
  */
 class GroupModel extends ModelBase {
 	/**
-	 * @var array $hasMany Relationship mappings
+	 * @HasMany("groupAccesses")
+	 * @var GroupAccessModel[]|ModelSet $groupAccesses
 	 */
-	public static $hasMany = array('groupAccesses');
+	protected ModelSet $groupAccesses;
 
 	/**
-	 * @var array $many2many Array with many2many relationship mappings
+	 * @Required
+	 * @Length(min="3", max="60")
 	 */
-	public static $many2many = array('users');
+	protected string $name;
 
 	/**
-	 * @var array $validate Array with verification data for some of the columns
+	 * @Many2Many("users")
+	 * @var ModelSet|UserModel[] $users
 	 */
-	public static $validate = array(
-		'name' => array('presence', 'length' => array('min' => 3, 'max' => 60))
-	);
+	protected ModelSet $users;
 }

@@ -46,7 +46,7 @@ abstract class HgitControllerBase extends FWController {
 				return false;
 			}
 			if (!HgitAuthoriser::checkAuthorisation($project, $function, $this->session()->get('user'))) {
-				$this->notAllowed("Function '{$function}' for project '{$project->name}' was denied");
+				throw $this->notAllowed("Function '{$function}' for project '{$project->name}' was denied");
 			}
 		}
 
@@ -61,8 +61,8 @@ abstract class HgitControllerBase extends FWController {
 	 * @psalm-suppress LessSpecificReturnStatement
 	 * @psalm-suppress MoreSpecificReturnType
 	 */
-	protected function getVisibleProjects(ProjectType $typeFilter = null): array {
-		if ($this->session === null || !$this->session->has('user')) {
+	protected function getVisibleProjects(?ProjectType $typeFilter = null): array {
+		if (!isset($this->session) || !$this->session->has('user')) {
 			$options = array('anyMask[!]' => 0);
 		} else {
 			$hgituser = $this->session->get('user');

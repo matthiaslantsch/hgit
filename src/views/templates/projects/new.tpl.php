@@ -1,6 +1,6 @@
 <h3>Create a new project</h3>
 <hr>
-<form class="formChecker" method="POST" action="<?=$_urlhelper->linkTo("projects")?>">
+<form class="formChecker" method="POST" action="<?=linkTo('projects_create')?>">
   <div class="form-group row">
     <label for="inputName" class="col-sm-2 col-form-label">Project Name</label>
     <div class="col-sm-10">

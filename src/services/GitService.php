@@ -7,7 +7,7 @@
  * @author  Matthias Lantsch <matthias.lantsch@bluewin.ch>
  */
 
-namespace holonet\hgit\helpers;
+namespace holonet\hgit\services;
 
 use RuntimeException;
 use holonet\common\collection\Registry;
@@ -18,20 +18,24 @@ use holonet\common\error\BadEnvironmentException;
  * GitService wraps around the git binary to offer an object oriented approach to a git repo.
  */
 class GitService {
-	/**
-	 * @var Registry $di_registry Global config values registry
-	 */
-	public $di_registry;
+	public Registry $di_registry;
+
+	public string $gitExe;
 
 	/**
-	 * @var string $gitExe Path to the git executable (validated in init())
+	 * @throws BadEnvironmentException if the git binary was not configured / is not valid
 	 */
-	public $gitExe;
+	public function __construct() {
+		//if it was not configured, assume it's in the PATH and test anyway
+		$this->gitExe = $this->di_registry->get('gitExe', 'git');
 
-	/**
-	 * @param string $repoPath The absolute path for the repository
-	 * @return Repository git repository object for the given path
-	 */
+		try {
+			$this->execGit('--version');
+		} catch (RuntimeException $e) {
+			throw new BadEnvironmentException('Missing or invalid git executable configuration (define env key \'GIT_BIN_PATH\' or add git to PATH)', (int)($e->getCode()), $e);
+		}
+	}
+
 	public function accessRepository(string $repoPath): Repository {
 		return new Repository($this, $repoPath);
 	}
@@ -40,13 +44,10 @@ class GitService {
 	 * method used to clone a git repository into a working dir
 	 * and then returning a Repository object on that new working copy
 	 * if no target directory is given, a directory in sys_temp_dir is created.
-	 * @param string $url The url of the git repository to clone
-	 * @param string $path The path for the cloned repository
-	 * @return Repository object of the new working copy
 	 */
-	public function clone($url, $path = null): Repository {
+	public function clone(string $url, ?string $path = null): Repository {
 		if ($path === null) {
-			$path = sys_get_temp_dir().DIRECTORY_SEPARATOR.basename($url);
+			$path = sys_get_temp_dir().\DIRECTORY_SEPARATOR.basename($url);
 		}
 
 		$error = $this->execGit("clone {$url} {$path}");
@@ -67,7 +68,7 @@ class GitService {
 	 * @throws RuntimeException if the command failed and the ignoreFailure flag is false
 	 * @return string with the output of the git command
 	 */
-	public function execGit(string $cmd, string $path = null, bool $ignoreFailure = false): string {
+	public function execGit(string $cmd, ?string $path = null, bool $ignoreFailure = false): string {
 		$out = array();
 		$returnVal = 0;
 		$cmd = sprintf('"%s" %s %s 2>&1',
@@ -82,28 +83,12 @@ class GitService {
 
 		if ($returnVal !== 0) {
 			if ($ignoreFailure) {
-				return $ret;
+				return trim($ret);
 			}
 
 			throw new RuntimeException("Error running git command '{$cmd}'({$returnVal}):\n {$ret}", $returnVal);
 		}
 
 		return trim($ret);
-	}
-
-	/**
-	 * @throws BadEnvironmentException if the git binary was not configured / is not valid
-	 */
-	public function init(): void {
-		//if it was not configured, assume it's in the PATH and test anyway
-		$this->gitExe = $this->di_registry->get('gitExe', 'git');
-
-		try {
-			$this->execGit('--version');
-		} catch (RuntimeException $e) {
-			throw new BadEnvironmentException(
-				'Missing or invalid git executable configuration (define config key \'gitExe\' or add git to PATH)', (int)($e->getCode()), $e
-			);
-		}
 	}
 }

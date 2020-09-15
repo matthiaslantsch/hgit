@@ -5,55 +5,57 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <div class="navbar-nav mr-auto">
-        <a class="nav-item navbar-brand" href="<?=$_urlhelper->linkTo('')?>">HGIT</a>
+        <a class="nav-item navbar-brand" href="<?=linkTo('homepage')?>">HGIT</a>
         <span class="nav-item text-muted navbar-brand"><?=$title?></span>
       </div>
       <div class="alertArea align-middle mx-auto"></div>
       <div class="navbar-nav">
         <?php if(isset($project)): ?>
+            <li class="nav-item"><a class="nav-link" href="<?=linkTo('projects_show', ['projectName' => $project->slugname()])?>"><i class="fa fa-feed"></i> Activity</a></li>
           <!--
-            <li class="nav-item"><a class="nav-link" href="<?=$_urlhelper->linkTo("{$project->slugname()}")?>"><i class="fa fa-feed"></i> Activity</a></li>
-            <?php if(isAllowedAction($project, "readFiles", $session_user ?? null)): ?>
-              <li class="nav-item"><a class="nav-link" href="<?=$_urlhelper->linkTo("{$project->slugname()}/dir")?>"><i class="fa fa-folder-open-o"></i> Project Files</a></li>
+            <?php if(isAllowedAction($project, "readFiles", $_sessionuser ?? null)): ?>
+              <li class="nav-item"><a class="nav-link" href="<=linkTo("{$project->slugname()}/dir")?>"><i class="fa fa-folder-open-o"></i> Project Files</a></li>
             <?php endif; ?>
           -->
-          <?php if(isAllowedAction($project, "readCode", $session_user ?? null)): ?>
-            <a class="nav-link nav-item" href="<?=$_urlhelper->linkTo("{$project->slugname()}/repo")?>"><i class="fa fa-code-fork"></i> Git Repository</a>
-          <!--<li class="nav-item"><a class="nav-link" href="<?=$_urlhelper->linkTo("{$project->slugname()}/issues")?>"><i class="fa fa-tasks"></i> Issues</a></li>-->
+          <?php if(isAllowedAction($project, "readCode", $_sessionuser ?? null)): ?>
+            <a class="nav-link nav-item" href="<?=linkWebgit('tree', $project)?>">
+              <i class="fa fa-code-fork"></i> Git Repository
+            </a>
+          <!--<li class="nav-item"><a class="nav-link" href="<=linkTo("{$project->slugname()}/issues")?>"><i class="fa fa-tasks"></i> Issues</a></li>-->
           <?php endif; ?>
           <!--
-            <?php if(isAllowedAction($project, "readWiki", $session_user ?? null)): ?>
-              <li class="nav-item"><a class="nav-link" href="<?=$_urlhelper->linkTo("{$project->slugname()}/wiki")?>"><i class="fa fa-comments"></i>Wiki</a></li>
+            <?php if(isAllowedAction($project, "readWiki", $_sessionuser ?? null)): ?>
+              <li class="nav-item"><a class="nav-link" href="<=linkTo("{$project->slugname()}/wiki")?>"><i class="fa fa-comments"></i>Wiki</a></li>
             <?php endif; ?>
-            <?php if(isAllowedAction($project, "downloadArtifacts", $session_user ?? null)): ?>
-              <li class="nav-item"><a class="nav-link" href="<?=$_urlhelper->linkTo("{$project->slugname()}/f")?>"><i class="fa fa-download"></i> Downloads</a></li>
+            <?php if(isAllowedAction($project, "downloadArtifacts", $_sessionuser ?? null)): ?>
+              <li class="nav-item"><a class="nav-link" href="<=linkTo("{$project->slugname()}/f")?>"><i class="fa fa-download"></i> Downloads</a></li>
             <?php endif; ?>
           -->
         <?php else: ?>
-          <!--<li class="nav-item"><a class="nav-link" href="<?=$_urlhelper->linkTo('')?>"><i class="fa fa-tachometer"></i> Dashboard</a></li>-->
-          <a class="nav-link nav-item" href="<?=$_urlhelper->linkTo('')?>"><i class="fa fa-list"></i> Projects</a>
+          <!--<li class="nav-item"><a class="nav-link" href="<?=linkTo('homepage')?>"><i class="fa fa-tachometer"></i> Dashboard</a></li>-->
+          <a class="nav-link nav-item" href="<?=linkTo('homepage')?>"><i class="fa fa-list"></i> Projects</a>
           <!--
-            <?php if(isset($session_user)): ?>
-              <li class="nav-item"><a class="nav-link" href="<?=$_urlhelper->linkTo("dir")?>"><i class="fa fa-folder-open-o"></i> Project Directory</a></li>
+            <?php if(isset($_sessionuser)): ?>
+              <li class="nav-item"><a class="nav-link" href="<=linkTo("dir")?>"><i class="fa fa-folder-open-o"></i> Project Directory</a></li>
             <?php endif; ?>
-            <li class="nav-item"><a class="nav-link" href="<?=$_urlhelper->linkTo("help")?>"><i class="fa fa-question-circle-o"></i> Help</a></li>
+            <li class="nav-item"><a class="nav-link" href="<=linkTo("help")?>"><i class="fa fa-question-circle-o"></i> Help</a></li>
           -->
         <?php endif; ?>
-        <?php if(isset($session_user)): ?>
+        <?php if(isset($_sessionuser)): ?>
           <div class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
               <i class="fa fa-user fa-fw"></i>
             </a>
             <div class="dropdown-menu">
-              <span class="dropdown-header" href="#"><?=$session_user->username?></span>
-              <a class="dropdown-item" href="<?=$_urlhelper->linkTo("user")?>"><i class="fa fa-info-circle"></i> User Profile</a>
-              <!--<a class="dropdown-item" href="<?=$_urlhelper->linkTo("user/settings")?>"><i class="fa fa-gears fa-fw"></i> Settings</a>-->
+              <span class="dropdown-header" href="#"><?=$_sessionuser->username?></span>
+              <!--<a class="dropdown-item" href="<=linkTo("user_index")?>"><i class="fa fa-info-circle"></i> User Profile</a>
+              <a class="dropdown-item" href="<=linkTo("user_settings")?>"><i class="fa fa-gears fa-fw"></i> Settings</a>-->
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="<?=$_urlhelper->linkTo("logout")?>"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+              <a class="dropdown-item" href="<?=linkTo("logout")?>"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
             </div>
           </div>
         <?php else: ?>
-          <a class="nav-link" href="<?=$_urlhelper->linkTo("login")?>"><i class="fa fa-sign-in"></i> Login</a>
+          <a class="nav-link" href="<?=linkTo("login")?>"><i class="fa fa-sign-in"></i> Login</a>
         <?php endif; ?>
       </div>
     </div>

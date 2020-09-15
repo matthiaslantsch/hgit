@@ -7,7 +7,7 @@
       </div>
       <?php if($blob->lastCommit($context->refspec) !== null): ?>
         <div class="col-md-7">
-          <a href="<?=$_urlhelper->linkTo(sprintf("%s/repo/%s/commit/%s", $project->slugname(), $repoName, $blob->lastCommit($context->refspec)->hash))?>">
+          <a href="<?=linkWebgit('commit', $project, $blob->lastCommit($context->refspec)->hash)?>">
             <?=$blob->lastCommit()->msg?> -
             <?=$blob->lastCommit()->ago?>
           </a>
@@ -16,7 +16,7 @@
         <div class="col-md-7"></div>
       <?php endif; ?>
       <div class="col-md-1">
-        <a href="<?=$_urlhelper->linkTo(sprintf("%s/repo/%s/raw/%s/%s", $project->slugname(), $repoName, $context->refspec, $context->path))?>">Raw</a>
+        <a href="<?=linkWebgit('raw', $project, $context->refspec, $context->path)?>">Raw</a>
       </div>
     </div>
   </div>

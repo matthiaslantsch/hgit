@@ -48,6 +48,7 @@ $config["auth"]["authoriser"] = \holonet\hgit\helpers\HgitAuthoriser::class;
 $config["auth"]["usermodel"] = \holonet\hgit\models\UserModel::class;
 
 $config["gitExe"] = "%env(GIT_BIN_PATH)%";
+$config["projectRoot"] = "%env(PROJECT_ROOT_PATH)%";
 
 $config["vendorInfo"] = array(
 	"namespace" => "holonet",

@@ -299,11 +299,11 @@
         },
         {
             "name": "holonet/activerecord",
-            "version": "2.2.1",
+            "version": "2.2.2",
             "source": {
                 "type": "git",
                 "url": "https://holonet.easylabs.ch/hgit/holonet-activerecord/repo/holonet-activerecord.git",
-                "reference": "2.2.1"
+                "reference": "2.2.2"
             },
             "require": {
                 "doctrine/annotations": "^1.10",

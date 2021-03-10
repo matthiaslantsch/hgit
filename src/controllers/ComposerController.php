@@ -10,10 +10,8 @@
 namespace holonet\hgit\controllers;
 
 use holonet\hgit\models\ProjectModel;
-use holonet\hgit\services\GitService;
 use holonet\hgit\models\enum\ProjectType;
 use Symfony\Component\Routing\Annotation\Route;
-use holonet\hgit\services\ProjectDirectoryService;
 
 /**
  * ComposerController exposing that is supposed to communicate with
@@ -25,10 +23,6 @@ class ComposerController extends HgitControllerBase {
 	 * @var string[] DEV_VERSION_BRANCH_NAMES Names of branches to advertise as dev- versions
 	 */
 	public const DEV_VERSION_BRANCH_NAMES = array('master', 'develop');
-
-	public ProjectDirectoryService $di_directoryService;
-
-	public GitService $di_gitservice;
 
 	/**
 	 * @Route("/packages.json", methods={"GET"})
@@ -52,7 +46,7 @@ class ComposerController extends HgitControllerBase {
 					$atRefComposeJson = json_decode($atRefComposeJson->getContent(), true);
 					$atRefComposeJson['source'] = array(
 						'type' => 'git',
-						'url' => "{$this->request->getSchemeAndHttpHost()}{$this::linkInternal("{$phplib->slugname()}/repo/"."{$phplib->slugname()}.git")}",
+						'url' => "{$this->request->getSchemeAndHttpHost()}{$this::linkInternal('webgit_repo', array('projectName' => $phplib->slugname(), 'repoName' => "{$phplib->slugname()}.git"))}",
 						'reference' => $ref
 					);
 
@@ -70,12 +64,16 @@ class ComposerController extends HgitControllerBase {
 				$packages[$phplib->name] = $versions;
 			}
 		}
-		$this->view->set('packages', $packages);
-		$this->view->set('notify', '/composer/notify/%package%');
-		$this->view->set('notify-batch', '/composer/notify/');
+
+		$this->view->set('packageJson', array(
+			'packages' => $packages,
+			'notify' => '/composer/notify/%package%',
+			'notify-batch' => '/composer/notify/'
+		));
 		//$this->view->set("search", "/composer/search.json?q=%query%&type=%type%");
 
-		$this->respondTo('json');
+		/** @psalm-suppress UndefinedMethod */
+		$this->respondTo('json')->addCallback(fn (array $data) => $data['packageJson']);
 	}
 
 	/**

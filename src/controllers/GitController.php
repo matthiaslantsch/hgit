@@ -14,15 +14,12 @@ use holonet\hgit\helpers\GitResponse;
 use holonet\hgit\models\ProjectModel;
 use holonet\hgit\helpers\HgitAuthoriser;
 use holonet\holofw\auth\flow\PromptAuthFlow;
-use holonet\hgit\services\ProjectDirectoryService;
 
 /**
  * GitController is supposed to answer to requests of the git client.
  */
 class GitController extends HgitControllerBase {
 	public PromptAuthFlow $di_basicauth;
-
-	public ProjectDirectoryService $di_directoryService;
 
 	public function repo(string $projectName, string $repoName, ?string $path = null): void {
 		/** @var ProjectModel $project */
@@ -53,7 +50,7 @@ class GitController extends HgitControllerBase {
 				return;
 			}
 		} else {
-			$this->redirectInternal('webgit_show', array('projectName' => $projectName, 'repoName' => $repoName));
+			$this->redirectInternal('webgit_show', array('projectName' => $project->slugname(), 'repoName' => $repoName));
 
 			return;
 			//not sure what requests are sent from clients

@@ -71,9 +71,8 @@ class Repository {
 				$this->tags[$name] = new objects\Tag($this, $hash, $name);
 			} elseif (mb_strpos($refname, 'refs/heads/') !== false) {
 				$this->branches[$name] = new Branch($this, $hash, $name);
-			} else {
-				throw new RuntimeException("Error listing branches and tags, unknown refname '{$refname}'");
 			}
+//				throw new RuntimeException("Error listing branches and tags, unknown refname '{$refname}'");
 		}
 	}
 
@@ -146,6 +145,15 @@ class Repository {
 	 */
 	public function execGit(string $cmd, bool $ignoreFailure = false): string {
 		return $this->gitservice->execGit($cmd, $this->path, $ignoreFailure);
+	}
+
+	public function getCurrentVersion(): string {
+		$tag = $this->execGit('tag --points-at HEAD');
+		if (!empty($tag)) {
+			return $tag;
+		}
+
+		return $this->execGit('rev-parse --short HEAD');
 	}
 
 	/**

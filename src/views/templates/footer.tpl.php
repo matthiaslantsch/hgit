@@ -11,11 +11,11 @@
   <nav class="navbar fixed-bottom navbar-light bg-faded">
     <div class="container text-muted">
       <div class="pull-left">
-        &copy; 2021 Matthias Lantsch |
+        &copy; <?=date('Y')?> Matthias Lantsch |
         <a target="_blank" href="https://icons8.de/icons/set/git">Git icon</a> icon by <a target="_blank" href="https://icons8.de">Icons8</a>
       </div>
       <div class="pull-right">
-        HGIT 2.4.0
+        HGIT <?=$appVersion?>
       </div>
     </div>
   </nav>

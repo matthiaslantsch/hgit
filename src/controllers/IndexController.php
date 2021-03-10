@@ -30,12 +30,7 @@ class IndexController extends HgitControllerBase {
 	 * @Route("/logout", name="logout")
 	 */
 	public function logout(): void {
-		if ($this->session !== null) {
-			$this->session->clear();
-			$this->session->save();
-			$this->session->invalidate();
-			$this->session->save();
-		}
+		$this->destroySession();
 		$this->redirectInternal('homepage');
 	}
 }

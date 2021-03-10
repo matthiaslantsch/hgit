@@ -66,12 +66,14 @@ class ProjectDirectoryService {
 	 * @throws Exception if a filesystem operation failed
 	 */
 	public function create(ProjectModel $project): void {
+		FilesystemUtils::dirShouldExist($this->di_context->varPath('tmp'));
+
 		$basepath = FilesystemUtils::dirpath($this->projectDir, $project->slugname());
 		if (file_exists($basepath)) {
 			throw new RuntimeException("Project directory '{$basepath}' already exists");
 		}
 
-		$tempnewdir = sys_get_temp_dir().\DIRECTORY_SEPARATOR.$project->slugname().'_temp';
+		$tempnewdir = $this->di_context->varPath('tmp', $project->slugname().'_temp');
 		if (file_exists($tempnewdir)) {
 			FilesystemUtils::rrmdir($tempnewdir);
 		}
@@ -83,7 +85,7 @@ class ProjectDirectoryService {
 		$gitRepo = $tempnewdir.\DIRECTORY_SEPARATOR.'REPO'.\DIRECTORY_SEPARATOR.$project->slugname().'.git';
 
 		//create the main git repository
-		$tempdir = sys_get_temp_dir().\DIRECTORY_SEPARATOR.basename($gitRepo);
+		$tempdir = $this->di_context->varPath('tmp', basename($gitRepo));
 		FilesystemUtils::rrmdir($tempdir);
 		$this->di_gitservice->execGit("init --bare {$gitRepo}");
 

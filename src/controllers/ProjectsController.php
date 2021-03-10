@@ -18,15 +18,12 @@ use holonet\hgit\models\ProjectModel;
 use holonet\hgit\models\enum\ProjectType;
 use holonet\hgit\views\helpers\ViewUtils;
 use Symfony\Component\Routing\Annotation\Route;
-use holonet\hgit\services\ProjectDirectoryService;
 
 /**
  * ProjectsController exposing a crud interface for the project resource.
  * @REST("project")
  */
 class ProjectsController extends HgitControllerBase {
-	public ProjectDirectoryService $di_directoryService;
-
 	public function create(): void {
 		if (!$this->authoriseUser()) {
 			return;
@@ -92,9 +89,6 @@ class ProjectsController extends HgitControllerBase {
 		$this->view->set('title', 'Create a new project');
 	}
 
-	/**
-	 * @Route("/{projectName}", methods={"get"})
-	 */
 	public function show(string $projectName): void {
 		/** @var ProjectModel|null $project */
 		$project = $this->di_repo->get(ProjectModel::class, array('name' => $projectName));

@@ -10,6 +10,8 @@
 namespace holonet\hgit\services;
 
 use RuntimeException;
+use holonet\holofw\Context;
+use holonet\common\FilesystemUtils;
 use holonet\common\collection\Registry;
 use holonet\hgit\helpers\phphgit\Repository;
 use holonet\common\error\BadEnvironmentException;
@@ -18,6 +20,8 @@ use holonet\common\error\BadEnvironmentException;
  * GitService wraps around the git binary to offer an object oriented approach to a git repo.
  */
 class GitService {
+	public Context $di_context;
+
 	public Registry $di_registry;
 
 	public string $gitExe;
@@ -47,7 +51,8 @@ class GitService {
 	 */
 	public function clone(string $url, ?string $path = null): Repository {
 		if ($path === null) {
-			$path = sys_get_temp_dir().\DIRECTORY_SEPARATOR.basename($url);
+			FilesystemUtils::dirShouldExist($this->di_context->varPath('tmp'));
+			$path = $this->di_context->varPath('tmp', basename($url));
 		}
 
 		$error = $this->execGit("clone {$url} {$path}");

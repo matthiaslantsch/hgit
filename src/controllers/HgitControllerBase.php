@@ -13,12 +13,15 @@ use holonet\holofw\FWController;
 use holonet\hgit\models\ProjectModel;
 use holonet\hgit\helpers\HgitAuthoriser;
 use holonet\hgit\models\enum\ProjectType;
+use holonet\hgit\services\ProjectDirectoryService;
 
 /**
  * abstract HgitControllerBase base class for every hgit controller
  * contains commonly used logic throughout all controllers.
  */
 abstract class HgitControllerBase extends FWController {
+	public ProjectDirectoryService $di_directoryService;
+
 	/**
 	 * facade method sorting the parameter data
 	 * "unslugs" the project name if one was submitted.
@@ -29,6 +32,9 @@ abstract class HgitControllerBase extends FWController {
 				str_replace('-', '/', $this->request->attributes->get('projectName'))
 			);
 		}
+
+		$srcRepository = $this->di_directoryService->di_gitservice->accessRepository($this->di_app->context->frameworkStandardPath());
+		$this->view->set('appVersion', $srcRepository->getCurrentVersion());
 	}
 
 	/**

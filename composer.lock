@@ -299,11 +299,11 @@
         },
         {
             "name": "holonet/activerecord",
-            "version": "2.2.2",
+            "version": "2.2.4",
             "source": {
                 "type": "git",
                 "url": "https://holonet.easylabs.ch/hgit/holonet-activerecord/repo/holonet-activerecord.git",
-                "reference": "2.2.2"
+                "reference": "2.2.4"
             },
             "require": {
                 "doctrine/annotations": "^1.10",
@@ -408,11 +408,11 @@
         },
         {
             "name": "holonet/common",
-            "version": "1.4.0",
+            "version": "1.4.2",
             "source": {
                 "type": "git",
                 "url": "https://holonet.easylabs.ch/hgit/holonet-common/repo/holonet-common.git",
-                "reference": "1.4.0"
+                "reference": "1.4.2"
             },
             "require": {
                 "monolog/monolog": "^2.0",
@@ -634,11 +634,11 @@
         },
         {
             "name": "holonet/holofw",
-            "version": "3.3.0",
+            "version": "3.3.3",
             "source": {
                 "type": "git",
                 "url": "https://holonet.easylabs.ch/hgit/holonet-holofw/repo/holonet-holofw.git",
-                "reference": "3.3.0"
+                "reference": "3.3.3"
             },
             "require": {
                 "doctrine/annotations": "^1.10",
@@ -717,11 +717,11 @@
         },
         {
             "name": "holonet/riddle",
-            "version": "1.1.0",
+            "version": "1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://holonet.easylabs.ch/hgit/holonet-riddle/repo/holonet-riddle.git",
-                "reference": "1.1.0"
+                "reference": "1.1.1"
             },
             "require": {
                 "ext-curl": "*",
@@ -736,8 +736,8 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.1.x-dev",
-                    "dev-develop": "1.2.x-dev"
+                    "dev-develop": "1.2.x-dev",
+                    "dev-master": "1.1.x-dev"
                 }
             },
             "autoload": {

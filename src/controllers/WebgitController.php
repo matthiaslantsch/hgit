@@ -15,15 +15,12 @@ use holonet\hgit\helpers\phphgit\Repository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\HeaderUtils;
-use holonet\hgit\services\ProjectDirectoryService;
 
 /**
  * WebgitController exposing a web git interface.
  * @Route("/{projectName}/repo/{repoName?}")
  */
 class WebgitController extends HgitControllerBase {
-	public ProjectDirectoryService $di_directoryService;
-
 	private GitContext $context;
 
 	private Repository $gitrepo;

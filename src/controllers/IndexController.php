@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the holonet project management software
+ * This file is part of the holonet project management app
  * (c) Matthias Lantsch.
  *
  * @license http://opensource.org/licenses/gpl-license.php  GNU Public License
@@ -9,32 +9,28 @@
 
 namespace holonet\hgit\controllers;
 
-use Symfony\Component\Routing\Annotation\Route;
+use holonet\holofw\attributes\auth\Authorised;
+use Symfony\Component\Routing\Attribute\Route;
 
-/**
- * IndexController class for the index controller
- * handles common stuff like login and logout.
- */
-class IndexController extends HgitControllerBase {
-	/**
-	 * @Route("/login", name="login")
-	 */
+class IndexController extends \holonet\holofw\Controller {
+	#[Route('/', name: 'homepage')]
+	public function index(): void {
+		$this->shareGlobal('title', 'Project Index');
+
+		$this->render('index');
+	}
+
+	#[Route('/login', name: 'login')]
+	#[Authorised(permission: 'HGIT_USE')]
 	public function login(): void {
-		if ($this->authoriseUser() === false) {
-			return;
-		}
 		$this->redirectInternal('homepage');
 	}
 
-	/**
-	 * @Route("/logout", name="logout")
-	 */
+	#[Route('/logout', name: 'logout')]
+	#[Authorised(permission: 'HGIT_USE')]
 	public function logout(): void {
-		if ($this->session !== null) {
-			$this->session->clear();
-			$this->session->save();
-			$this->session->invalidate();
-			$this->session->save();
+		if ($this->hasSession()) {
+			$this->destroySession();
 		}
 		$this->redirectInternal('homepage');
 	}

@@ -4,58 +4,23 @@
  * (c) Matthias Lantsch
  *
  * @package hgit app
- * @license http://www.wtfpl.net/ Do what the fuck you want Public License
+ * @license http://opensource.org/licenses/gpl-license.php  GNU Public License
  * @author  Matthias Lantsch <matthias.lantsch@bluewin.ch>
  */
 
-$config["timezone"] = "Europe/Zurich";
 
-$config["database"] = array(
-	"driver" => "%env(DB_DRIVER)%",
-	"file" => "%env(DB_FILE)%",
-	"host" => "%env(DB_HOST)%",
-	"port" => "%env(DB_PORT)%",
-	"socket" => "%env(DB_SOCKET)%",
-	"username" => "%env(DB_USER)%",
-	"password" => "%env(DB_PASSWORD)%",
-);
+$config['timezone'] = 'Europe/Zurich';
 
-if(filter_var($_ENV['USE_REMOTE_AUTH_SYSTEM'], FILTER_VALIDATE_BOOLEAN)) {
-	$config["auth"] = array(
-		"realm" => "sphinx_auth",
-		"flow" => \holonet\sphinxauth\SphinxAuthFlow::class,
-		"handler" => \holonet\sphinxauth\SphinxAuthenticator::class,
-		"sphinx" => array(
-			"provider_url" => "%env(SPHINX_URL)%",
-			"client_id" => "%env(SPHINX_CLIENT_ID)%",
-			"client_secret" => "%env(SPHINX_CLIENT_SECRET)%",
-			"realm" => "%env(SPHINX_REALM)%"
-		)
-	);
-} elseif(filter_var($_ENV['DEV_MODE'], FILTER_VALIDATE_BOOLEAN)) {
-	$config["auth"] = array(
-		"flow" => \holonet\holofw\auth\flow\PromptAuthFlow::class,
-		"handler" => \holonet\holofw\auth\handler\DevAuthHandler::class
-	);
-} else {
-	$config["auth"] = array(
-		"flow" => \holonet\holofw\auth\flow\PromptAuthFlow::class,
-		"handler" => \holonet\holofw\auth\handler\FlatfileAuthHandler::class
-	);
-}
+$config['di']['auto_wire'][\holonet\holofw\auth\Authoriser::class] = \holonet\hgit\helpers\HgitAuthoriser::class;
+//$config['auth']['user_model_class'] = \holonet\hgit\models\UserModel::class;
 
-$config["auth"]["authoriser"] = \holonet\hgit\helpers\HgitAuthoriser::class;
-$config["auth"]["usermodel"] = \holonet\hgit\models\UserModel::class;
+$config['git_exe'] = '%env(GIT_BIN_PATH)%';
+$config['project_root'] = '%env(PROJECT_ROOT_PATH)%';
 
-$config["gitExe"] = "%env(GIT_BIN_PATH)%";
-$config["projectRoot"] = "%env(PROJECT_ROOT_PATH)%";
-
-$config["vendorInfo"] = array(
-	"namespace" => "holonet",
-	"author" => array(
-		"name" => "Matthias Lantsch",
-		"email" => "matthias.lantsch@bluewin.ch"
-	),
-	"license" => "http://opensource.org/licenses/gpl-license.php  GNU Public License",
-	"partOf" => "the holonet project management software"
+$config['vendor_info'] = array(
+	'namespace' => 'holonet',
+	'author_name' => 'Matthias Lantsch',
+	'author_email' => 'matthias.lantsch@bluewin.ch',
+	'license' => 'http://opensource.org/licenses/gpl-license.php  GNU Public License',
+	'part_of' => 'the holonet project management software'
 );

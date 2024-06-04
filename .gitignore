@@ -6,3 +6,5 @@
 .idea/
 /var
 .env
+/.php-cs-fixer.cache
+composer.lock

@@ -1,0 +1,15 @@
+default:
+    extensions:
+        Behat\MinkExtension:
+            base_url: "http://localhost:55555"
+            show_cmd: start "" "%s"
+            javascript_session: zombie
+            goutte: ~
+            zombie:
+                node_bin: node.exe
+    suites:
+        default:
+            paths:
+                - "%paths.base%/tests/features"
+            contexts:
+                - holonet\hgit\tests\FeatureContext

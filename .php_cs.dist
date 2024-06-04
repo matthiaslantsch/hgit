@@ -1,8 +1,0 @@
-<?php
-$config = require_once 'vendor/holonet/hdev/.php_cs.dist';
-
-return $config->setFinder(PhpCsFixer\Finder::create()
-	->in('src')
-	->exclude('views/templates')
-	->notName('schema.php')
-);

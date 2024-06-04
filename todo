@@ -1,0 +1,25 @@
+x new design / layout
+x login / logout
+x update editorconfig and other meta files
+x update configs for cs fixer tools
+- check scripts in composer.json
+
+- project management as before (with edit mask)
+  - edit should be difficult (git repository renaming)
+
+- composer interface implementation
+  - check library updating problem (composer update => library referenced by branch alias does not get updated)
+  - (tracking of downloads)
+
+- git client interface (respond to git requests) (custom motd?)
+  - new token management for git client (no more password flow)
+
+- index page with a sample of resources (activity, projects)
+
+- webgit interface
+  - ensure that the active one is marked in the nav
+  - browse repository, tags, commits as before
+  - merge requests
+
+- project resources
+

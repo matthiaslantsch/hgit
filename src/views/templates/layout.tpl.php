@@ -20,6 +20,13 @@
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="min-h-screen bg-gray-800 font-sans text-gray-100 antialiased">
+  <?php foreach ($this->flashE() as $message): ?>
+    <?=$this->include('includes/flash', ['message' => $message, 'class' => 'bg-red-600']); ?>
+  <?php endforeach; ?>
+  <?php foreach ($this->flashS() as $message): ?>
+    <?=$this->include('includes/flash', ['message' => $message, 'class' => 'bg-green-600']); ?>
+  <?php endforeach; ?>
+
   <?=$this->include('includes/navi')?>
 
   <?=$this->renderBlock('content')?>

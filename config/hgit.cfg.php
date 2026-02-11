@@ -11,11 +11,17 @@
 
 $config['timezone'] = 'Europe/Zurich';
 
-$config['di']['auto_wire'][\holonet\holofw\auth\Authoriser::class] = \holonet\hgit\helpers\HgitAuthoriser::class;
-//$config['auth']['user_model_class'] = \holonet\hgit\models\UserModel::class;
+$config['di']['auto_wire'][\holonet\holofw\auth\Authoriser::class] = \holonet\hgit\auth\HgitAuthoriser::class;
+$config['auth']['user_model_class'] = \holonet\hgit\models\UserModel::class;
+$config['auth_base_role'] = '%env(BASE_ROLE)%';
 
-$config['git_exe'] = '%env(GIT_BIN_PATH)%';
-$config['project_root'] = '%env(PROJECT_ROOT_PATH)%';
+$config['git_bin'] = '%env(GIT_BIN_PATH)%';
+
+if (!empty($_ENV['PROJECT_ROOT_PATH'])) {
+	$config['project_root'] = '%env(PROJECT_ROOT_PATH)%';
+} else {
+	$config['project_root'] = '%app.var_dir%/projects';
+}
 
 $config['vendor_info'] = array(
 	'namespace' => 'holonet',

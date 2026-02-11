@@ -9,10 +9,11 @@
 		}
 	],
 	"require": {
-		"php": ">=8.1",
-		"erusev/parsedown": "^1.7",
+		"php": ">=8.4",
+		"hackzilla/password-generator": "dev-master",
 		"holonet/holofw": "~3.4.0",
 		"holonet/sphinxauth": "~1.2.0",
+		"parsedown/parsedown": "^1.7",
 		"scrivo/highlight.php": "^9.18"
 	},
 	"require-dev": {
@@ -25,7 +26,7 @@
 	"repositories": [
 		{
 			"type": "composer",
-			"url": "https://holonet.easylabs.ch/hgit/composer/"
+			"url": "https://holonetz.synology.me/hgit/composer/"
 		}
 	],
 	"minimum-stability": "dev",
@@ -53,14 +54,15 @@
 			"@php -d memory_limit=-1 vendor/holonet/holofw/bin/dewit cache refresh"
 		],
 		"fix": [
-			"@composer normalize --diff",
-			"@php -d memory_limit=-1 vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --verbose --ansi"
+			"@composer normalize --diff --ansi",
+			"@php -d memory_limit=-1 vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --verbose --ansi --diff"
 		],
 		"test": [
+			"@composer validate --ansi",
+			"@composer normalize --dry-run --diff --ansi",
+			"@php vendor/bin/hdev sync-dev-stubs --no-interactive",
 			"@php -d memory_limit=-1 vendor/behat/behat/bin/behat --stop-on-failure --colors",
-			"@composer validate",
-			"@composer normalize --dry-run --diff",
-			"@php -d memory_limit=-1 vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --verbose --dry-run --ansi",
+			"@php -d memory_limit=-1 vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --verbose --dry-run --ansi --diff",
 			"@php -d memory_limit=-1 vendor/vimeo/psalm/psalm"
 		]
 	}

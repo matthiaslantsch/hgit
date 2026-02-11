@@ -9,25 +9,30 @@
 
 namespace holonet\hgit\controllers;
 
+use holonet\hgit\models\ProjectModel;
+use holonet\hgit\utils\VisibleProjectsOptionsTrait;
 use holonet\holofw\attributes\auth\Authorised;
 use Symfony\Component\Routing\Attribute\Route;
 
 class IndexController extends \holonet\holofw\Controller {
+	use VisibleProjectsOptionsTrait;
+
 	#[Route('/', name: 'homepage')]
 	public function index(): void {
 		$this->shareGlobal('title', 'Project Index');
 
+		$this->share('projects', $this->repo->select(ProjectModel::class, $this->projectIndexOptions()));
+
 		$this->render('index');
 	}
 
-	#[Route('/login', name: 'login')]
 	#[Authorised(permission: 'HGIT_USE')]
+	#[Route('/login', name: 'login')]
 	public function login(): void {
 		$this->redirectInternal('homepage');
 	}
 
 	#[Route('/logout', name: 'logout')]
-	#[Authorised(permission: 'HGIT_USE')]
 	public function logout(): void {
 		if ($this->hasSession()) {
 			$this->destroySession();
